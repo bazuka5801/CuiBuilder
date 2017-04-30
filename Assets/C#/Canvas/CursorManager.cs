@@ -20,21 +20,21 @@ public class CursorManager : MonoBehaviour {
 
     private const int OFFSET = 8;
 
-    static readonly Dictionary<string, CursorMode> AnchorModes = new Dictionary<string, CursorMode>()
+    static readonly Dictionary<Vector2, CursorMode> AnchorModes = new Dictionary<Vector2, CursorMode>()
     {
-        { "0.5 0.5", CursorMode.Cross },
+        { new Vector2(0.5f,0.5f), CursorMode.Cross },
 
-        { "0.0 0.0", CursorMode.NESW },
-        { "1.0 1.0", CursorMode.NESW },
+        { new Vector2(0.0f,0.0f), CursorMode.NESW },
+        { new Vector2(1.0f,1.0f), CursorMode.NESW },
 
-        { "0.0 1.0", CursorMode.NWSE },
-        { "1.0 0.0", CursorMode.NWSE },
-        
-        { "0.5 1.0", CursorMode.NS },
-        { "0.5 0.0", CursorMode.NS },
+        {  new Vector2(0.0f,1.0f), CursorMode.NWSE },
+        {  new Vector2(1.0f,0.0f), CursorMode.NWSE },
 
-        { "1.0 0.5", CursorMode.EW },
-        { "0.0 0.5", CursorMode.EW },
+        {  new Vector2(0.5f,1.0f), CursorMode.NS },
+        {  new Vector2(0.5f,0.0f), CursorMode.NS },
+
+        {  new Vector2(1.0f,0.5f), CursorMode.EW },
+        {  new Vector2(0.0f,0.5f), CursorMode.EW },
     };
 
     void Awake()
@@ -55,7 +55,7 @@ public class CursorManager : MonoBehaviour {
     {
         _instance.set_cursor(mode);
     }
-    public static void SetCursorByAnchor(string anchor)
+    public static void SetCursorByAnchor(Vector2 anchor)
     {
         if (!AnchorModes.ContainsKey(anchor))Debug.LogError("Anchor not contained: "+anchor);
         SetCursor(AnchorModes[anchor]);

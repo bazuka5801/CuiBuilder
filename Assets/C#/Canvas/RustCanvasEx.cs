@@ -36,6 +36,14 @@ public static class RustCanvasEx
         return transform.GetParent().GetLocalPoint(RustCanvas.GetMouseAnchor());
     }
 
+    public static GameObject CreateChild(this RectTransform transform, string name)
+    {
+        var child = new GameObject(name);
+        child.transform.SetParent(transform);
+        child.AddComponent<RectTransform>();
+        return child;
+    }
+
     #endregion
 
     #region Transform Point
