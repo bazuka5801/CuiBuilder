@@ -8,21 +8,40 @@ public static class RustCanvasEx
     
     #region RectTransform
 
-    public static void SetPosition(this RectTransform transform, Vector2 anchorMin)
+    public static void SetPosition(this RectTransform transform, Vector2 anchorMin, bool borderCollision = false)
     {
-        SetRect(transform, anchorMin, transform.GetLocalSize()+anchorMin);
+        SetRect(transform, anchorMin, transform.GetLocalSize()+anchorMin, borderCollision);
     }
-    public static void SetRect(this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax)
+
+    public static void SetRect(this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax, bool borderCollision = false)
     {
-        transform.anchorMin = anchorMin;
-        transform.anchorMax = anchorMax;
+        Vector2 shift = Vector2.zero;
+        if (borderCollision)
+        {
+            if (anchorMin.x < 0) shift.x = -anchorMin.x;
+            if (anchorMin.y < 0) shift.y = -anchorMin.y;
+            if (anchorMax.x > 1) shift.x = -anchorMax.x + 1;
+            if (anchorMax.y > 1) shift.y = -anchorMax.y + 1;
+        }
+        transform.anchorMin = anchorMin + shift;
+        transform.anchorMax = anchorMax + shift;
         transform.offsetMin = Vector2.zero;
         transform.offsetMax = Vector2.zero;
     }
+
+    public static void SetWorldSize(this RectTransform transform, Vector2 size)
+    {
+        var worldRUPoint = transform.GetParent().GetWorldPoint(transform.anchorMin) + size;
+        var localRUPoint = transform.GetParent().GetLocalPoint(worldRUPoint);
+        transform.SetRect(transform.anchorMin, localRUPoint);
+
+    }
+
     public static Vector2 GetLocalSize(this RectTransform transform)
     {
         return transform.anchorMax - transform.anchorMin;
     }
+
     public static Vector2 GetWorldSize(this RectTransform transform)
     {
         var worldSize = GetLocalSize(transform);
@@ -39,10 +58,22 @@ public static class RustCanvasEx
     public static GameObject CreateChild(this RectTransform transform, string name)
     {
         var child = new GameObject(name);
-        child.transform.SetParent(transform);
+        child.transform.SetParent(transform, false);
         child.AddComponent<RectTransform>();
         return child;
     }
+
+
+    public static Vector2 GetPixelShift(this RectTransform transform)
+    {
+        return (((RectTransform)transform.parent).GetWorldSize().Div(new Vector2(Screen.width, Screen.height)));
+    }
+
+    public static void SetPixelSize(this RectTransform transform, Vector2 size)
+    {
+        transform.SetRect(transform.anchorMin, transform.anchorMin+Vector2.Scale(transform.GetPixelShift(), size));
+    }
+
 
     #endregion
 
@@ -77,13 +108,14 @@ public static class RustCanvasEx
         hierarchy.Insert(0, transform);
         return hierarchy;
     }
+
     private static List<RectTransform> GetParents(RectTransform transform)
     {
         var parents = new List<RectTransform>();
         RectTransform current = transform;
         while (true)
         {
-            if (transform.root == current.parent) break;
+            if (transform.root == current || transform.root == current.parent) break;
             current = (RectTransform) current.parent;
             parents.Add(current);
         }
@@ -103,6 +135,7 @@ public static class RustCanvasEx
     {
         return transform.anchorMin + Vector2.Scale(transform.GetLocalSize(), pivot);
     }
+
     public static Vector2 GetPivotWorldPosition(this RectTransform transform, Vector2 pivot)
     {
         return transform.GetWorldPoint(transform.anchorMin + Vector2.Scale(transform.GetLocalSize(), pivot));
@@ -116,10 +149,12 @@ public static class RustCanvasEx
     {
         return new Vector2(vec.x, y);
     }
+
     public static Vector2 WithX(this Vector2 vec, float x)
     {
         return new Vector2(x, vec.y);
     }
+
     public static Vector2 Div(this Vector2 vec, Vector2 vec2)
     {
         return new Vector2(vec.x/vec2.x, vec.y/vec2.y);

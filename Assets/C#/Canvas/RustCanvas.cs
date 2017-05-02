@@ -36,15 +36,10 @@ public class RustCanvas : MonoBehaviour, IEventSystemHandler
         return new Vector2(GetMousePos().x / canvas.rect.size.x, GetMousePos().y / canvas.rect.size.y); 
     }
 
-    /*public static Vector2 MouseLocalAnchor(RectTransform transform)
+    private void OnGUI()
     {
-        var parents = new List<RectTransform>();
-        GetParentList(parents, transform);
-        Vector2 mouse = GetMouseAnchor();
-        foreach (var parent in parents)
-            mouse = Vector2.Scale(mouse + parent.anchorMin, parent.GetSize());
-        return mouse;
-}*/
+        GUILayout.Label("MOUSE ANCHOR: "+RustCanvas.GetMouseAnchor().ToString("F3"));
+    }
 
 
 }
