@@ -191,7 +191,7 @@ public class HierarchyView : MonoBehaviour
                 int dropTIndex = dropT.GetSiblingIndex();
                 if (dragT.parent != dropT.parent)
                 {
-                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.gameObject);
+                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.parent.gameObject);
                     dragT.SetSiblingIndex(dropTIndex + 1);
                 }
                 else
@@ -217,7 +217,7 @@ public class HierarchyView : MonoBehaviour
                 Transform dragT = ((GameObject)e.DragItems[i]).transform;
                 if (dragT.parent != dropT.parent)
                 {
-                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.gameObject);
+                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.parent.gameObject);
                 }
 
                 int dropTIndex = dropT.GetSiblingIndex();

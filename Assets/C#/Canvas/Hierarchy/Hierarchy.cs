@@ -54,11 +54,11 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler{
         {
             parent.Children.Remove(this);
 
-            var position = rTransform.GetWorldPoint(rTransform.anchorMin);
+            var position = rTransform.GetParent().GetWorldPoint(rTransform.anchorMin);
             var size = rTransform.GetWorldSize();
             Debug.Log(position + " " + size);
             transform.SetParent(newParent.transform, false);
-            rTransform.SetPosition(rTransform.GetLocalPoint(position));
+            rTransform.SetPosition(rTransform.GetParent().GetLocalPoint(position));
             rTransform.SetWorldSize(size);
         }
         else
