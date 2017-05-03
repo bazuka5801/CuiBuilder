@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Interact : MonoBehaviour, IPoolHandler
+public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 {    
     [SerializeField] private bool isWindow;
     [SerializeField] private GameObject dragHandle;
@@ -151,7 +151,17 @@ public class Interact : MonoBehaviour, IPoolHandler
 
     public void OnPoolLeave()
     {
+
+    }
+
+    public void OnSelected()
+    {
         BuildTriggers();
+    }
+
+    public void OnUnselected()
+    {
+        DestroyTriggers();
     }
 
     #endregion

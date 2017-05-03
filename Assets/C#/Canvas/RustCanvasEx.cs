@@ -31,9 +31,9 @@ public static class RustCanvasEx
 
     public static void SetWorldSize(this RectTransform transform, Vector2 size)
     {
-        var worldRUPoint = transform.GetParent().GetWorldPoint(transform.anchorMin) + size;
-        var localRUPoint = transform.GetParent().GetLocalPoint(worldRUPoint);
-        transform.SetRect(transform.anchorMin, localRUPoint);
+        var worldAnchorMax = transform.GetParent().GetWorldPoint(transform.anchorMin) + size;
+        var localAnchorMax = transform.GetParent().GetLocalPoint(worldAnchorMax);
+        transform.SetRect(transform.anchorMin, localAnchorMax);
 
     }
 
@@ -138,30 +138,11 @@ public static class RustCanvasEx
 
     public static Vector2 GetPivotWorldPosition(this RectTransform transform, Vector2 pivot)
     {
-        return transform.GetWorldPoint(transform.anchorMin + Vector2.Scale(transform.GetLocalSize(), pivot));
+        return transform.GetParent().GetWorldPoint(transform.anchorMin + Vector2.Scale(transform.GetLocalSize(), pivot));
     }
 
     #endregion
-
-    #region Vector2
-
-    public static Vector2 WithY(this Vector2 vec, float y)
-    {
-        return new Vector2(vec.x, y);
-    }
-
-    public static Vector2 WithX(this Vector2 vec, float x)
-    {
-        return new Vector2(x, vec.y);
-    }
-
-    public static Vector2 Div(this Vector2 vec, Vector2 vec2)
-    {
-        return new Vector2(vec.x/vec2.x, vec.y/vec2.y);
-    }
-
-    #endregion
-
+    
     #region EventTrigger
 
     public static void Add(this EventTrigger eventTrigger, EventTriggerType eventID, Action callback)

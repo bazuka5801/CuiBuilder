@@ -4,6 +4,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using Battlehub.UIControls;
+
+public interface ISelectHandler
+{
+    void OnSelected();
+    void OnUnselected();
+}
+
 /// <summary>
 /// In this demo we use game objects hierarchy as data source (each data item is game object)
 /// You can use any hierarchical data with treeview.
@@ -55,6 +62,17 @@ public class HierarchyView : MonoBehaviour
 
         //Bind data items
         TreeView.Items = dataItems;
+    }
+
+    public static bool Select(GameObject obj)
+    {
+        if (m_Instance.TreeView.IsItemSelected(obj)) return false;
+        var newSelected = new List<object>();
+        if (Input.GetKey(m_Instance.TreeView.MultiselectKey) && m_Instance.TreeView.SelectedItems != null)
+            newSelected.AddRange(m_Instance.TreeView.SelectedItems.Cast<object>().ToList());
+        newSelected.Add(obj);
+        m_Instance.TreeView.SelectedItems = newSelected;
+        return true;
     }
 
     private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
@@ -109,6 +127,23 @@ public class HierarchyView : MonoBehaviour
         //Do something on selection changed (just syncronized with editor's hierarchy for demo purposes)
         UnityEditor.Selection.objects = e.NewItems.OfType<GameObject>().ToArray();
 #endif
+
+        foreach(var oldItem in e.OldItems.Cast<GameObject>())
+        {
+            SendSelectEvent(oldItem, (i) => i.OnUnselected());
+        }
+        foreach (var newItem in e.NewItems.Cast<GameObject>())
+        {
+            SendSelectEvent(newItem, (i) => i.OnSelected());
+        }
+    }
+
+    public void SendSelectEvent(GameObject obj, Action<ISelectHandler> callback)
+    {
+        foreach(var selectHandler in obj.GetComponents(typeof(ISelectHandler)).OfType<ISelectHandler>())
+        {
+            callback.Invoke(selectHandler);
+        }       
     }
 
     private void OnItemsRemoved(object sender, ItemsRemovedArgs e)

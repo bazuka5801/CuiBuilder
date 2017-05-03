@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler{
+public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISelectHandler{
 
     public static Dictionary<GameObject, Hierarchy> Lookup = new Dictionary<GameObject, Hierarchy>();
     public List<Hierarchy> Children = new List<Hierarchy>();
@@ -74,6 +74,16 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler{
         SetParent(Lookup[newParent]);
     }
     public void OnPointerClick(PointerEventData eventData)
+    {
+        if (HierarchyView.Select(gameObject)) return;
+    }
+
+    public void OnSelected()
+    {
+
+    }
+
+    public void OnUnselected()
     {
 
     }

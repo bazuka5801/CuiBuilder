@@ -12,7 +12,7 @@ namespace Inspector.UIControls
         public class OnVectorChangedEvent : UnityEvent<object>
         { }
 
-        [SerializeField] private InputBox m_InputBoxX, m_InputBoxY;
+        [SerializeField] private FloatBox m_InputBoxX, m_InputBoxY;
         public OnVectorChangedEvent OnEndEdit, OnValueChanged;
 
         private void Awake()
@@ -32,13 +32,19 @@ namespace Inspector.UIControls
         private void SendEventCallback(OnVectorChangedEvent callback)
         {
             if (callback == null) return;
-            float x, y;
-            if (!float.TryParse(m_InputBoxX.Get(), out x) || !float.TryParse(m_InputBoxY.Get(), out y))
+
+            object x = m_InputBoxX.Get();
+            object y = m_InputBoxY.Get();
+
+            float? xFloat = x as float?;
+            float? yFloat = y as float?;
+
+            if (xFloat != null && yFloat != null)
             {
-                callback.Invoke(m_InputBoxX.Get() + " " + m_InputBoxY.Get());
+                callback.Invoke(new Vector2((float)xFloat, (float)yFloat));
                 return;
             }
-            callback.Invoke(new Vector2(x, y));
+            callback.Invoke(m_InputBoxX.Get() + " " + m_InputBoxY.Get());
         }
     }
 }

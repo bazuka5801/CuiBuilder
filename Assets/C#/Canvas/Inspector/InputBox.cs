@@ -32,8 +32,8 @@ namespace Inspector.UIControls
 
         private void DisableEvents()
         {
-            m_InputField.onEndEdit = null;
-            m_InputField.onValueChanged = null;
+            m_InputField.onEndEdit.RemoveAllListeners();
+            m_InputField.onValueChanged.RemoveAllListeners();
         }
 
         private void EnableEvents()
