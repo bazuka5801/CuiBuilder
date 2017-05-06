@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -9,6 +10,8 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISe
     public static Dictionary<GameObject, Hierarchy> Lookup = new Dictionary<GameObject, Hierarchy>();
     public List<Hierarchy> Children = new List<Hierarchy>();
     [SerializeField]private Hierarchy parent;
+
+    public static List<Hierarchy> Selection { get { return HierarchyView.GetSelectedItems().Select(o=>Lookup[o]).ToList(); } }
 
     private void Awake()
     {

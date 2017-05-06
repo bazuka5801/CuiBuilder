@@ -66,8 +66,13 @@ public class HierarchyView : MonoBehaviour
 
     public static bool Select(GameObject obj)
     {
-        if (m_Instance.TreeView.IsItemSelected(obj)) return false;
         var newSelected = new List<object>();
+        if (m_Instance.TreeView.IsItemSelected(obj)) {
+            newSelected.AddRange(m_Instance.TreeView.SelectedItems.Cast<object>().ToList());
+            newSelected.Remove(obj);
+            m_Instance.TreeView.SelectedItems = newSelected;
+            return false;
+        }
         if (Input.GetKey(m_Instance.TreeView.MultiselectKey) && m_Instance.TreeView.SelectedItems != null)
             newSelected.AddRange(m_Instance.TreeView.SelectedItems.Cast<object>().ToList());
         newSelected.Add(obj);
@@ -120,6 +125,24 @@ public class HierarchyView : MonoBehaviour
             e.Children = children;
         }
     }
+
+    public static IEnumerable<GameObject> GetSelectedItems()
+    {
+        if (m_Instance.TreeView.SelectedItems == null) return new List<GameObject>();
+        else return m_Instance.TreeView.SelectedItems.OfType<GameObject>();
+    }
+
+    public static void ChangeName(GameObject item, string name)
+    {
+        item.name = name;
+        m_Instance.TreeView.GetItemContainer(item).GetComponentInChildren<Text>().text = name;
+    }
+
+    public static void AddSelectionListener(EventHandler<SelectionChangedArgs> callback)
+    {
+        m_Instance.TreeView.SelectionChanged += callback;
+    }
+    
 
     private void OnSelectionChanged(object sender, SelectionChangedArgs e)
     {
