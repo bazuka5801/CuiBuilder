@@ -5,22 +5,17 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-public class FloatBox : MonoBehaviour {
-    [Serializable]
-    public class OnFloatBoxChangedEvent : UnityEvent<object>
-    { }
+public class FloatBox : InspectorField {
+    
 
     [SerializeField] private InputField m_InputField;
-
-    public OnFloatBoxChangedEvent OnEndEdit;
-    public OnFloatBoxChangedEvent OnValueChanged;
 
     private void Awake()
     {
         EnableEvents();
     }
 
-    public object Get()
+    public override object GetValue()
     {
         float num;
         if (!float.TryParse(m_InputField.text, out num))
@@ -30,28 +25,20 @@ public class FloatBox : MonoBehaviour {
         return m_InputField.text;
     }
 
-    public void Set(string value)
+    public override void SetValue(object value)
     {
         DisableEvents();
-        m_InputField.text = value;
+        m_InputField.text = value.ToString();
         EnableEvents();
     }
 
-    private void DisableEvents()
+    public void DisableEvents()
     {
         m_InputField.onEndEdit.RemoveAllListeners();
-        m_InputField.onValueChanged.RemoveAllListeners();
     }
 
-    private void EnableEvents()
+    public void EnableEvents()
     {
-        m_InputField.onEndEdit.AddListener((s) => SendEventCallback(OnEndEdit));
-        m_InputField.onValueChanged.AddListener((s) => SendEventCallback(OnEndEdit));
-    }
-
-    public void SendEventCallback(OnFloatBoxChangedEvent callback)
-    {
-        if (callback == null) return;
-        callback.Invoke(Get());
+        m_InputField.onEndEdit.AddListener(s=> { onChanged.Invoke(float.Parse(s)); });
     }
 }

@@ -7,44 +7,73 @@ using UnityEngine.UI;
 
 namespace Inspector.UIControls
 {
-    public class VectorInput : MonoBehaviour {
-        [Serializable]
-        public class OnVectorChangedEvent : UnityEvent<object>
-        { }
+    public class VectorInput : InspectorField {
 
         [SerializeField] private FloatBox m_InputBoxX, m_InputBoxY;
-        public OnVectorChangedEvent OnEndEdit, OnValueChanged;
 
         private void Awake()
         {
-            m_InputBoxX.OnEndEdit.AddListener((x)=> SendEventCallback(OnEndEdit));
-            m_InputBoxY.OnEndEdit.AddListener((y) => SendEventCallback(OnEndEdit));
-            m_InputBoxX.OnValueChanged.AddListener((x) => SendEventCallback(OnValueChanged));
-            m_InputBoxY.OnValueChanged.AddListener((y) => SendEventCallback(OnValueChanged));
+            m_InputBoxX.AddListener(x => SendEventCallback());
+            m_InputBoxY.AddListener(x => SendEventCallback());
         }
 
         public void Set(Vector2 vec)
         {
-            m_InputBoxX.Set(vec.x.ToString("F4"));
-            m_InputBoxY.Set(vec.y.ToString("F4"));
+            m_InputBoxX.SetValue(vec.x.ToString("F4"));
+            m_InputBoxY.SetValue(vec.y.ToString("F4"));
         }
 
-        private void SendEventCallback(OnVectorChangedEvent callback)
+        private void SendEventCallback()
         {
-            if (callback == null) return;
+            onChanged.Invoke(GetValue());
+        }
+        private void DisableEvents()
+        {
+            m_InputBoxX.DisableEvents();
+            m_InputBoxY.DisableEvents();
+        }
 
-            object x = m_InputBoxX.Get();
-            object y = m_InputBoxY.Get();
+        private void EnableEvents()
+        {
+            m_InputBoxX.EnableEvents();
+            m_InputBoxY.EnableEvents();
+        }
+
+        public override object GetValue()
+        {
+            object x = m_InputBoxX.GetValue();
+            object y = m_InputBoxY.GetValue();
 
             float? xFloat = x as float?;
             float? yFloat = y as float?;
 
             if (xFloat != null && yFloat != null)
             {
-                callback.Invoke(new Vector2((float)xFloat, (float)yFloat));
-                return;
+                return new Vector2((float)xFloat, (float)yFloat);
             }
-            callback.Invoke(m_InputBoxX.Get() + " " + m_InputBoxY.Get());
+            return x + " " + y;
+        }
+
+        public override void SetValue(object value)
+        {
+            DisableEvents();
+            string strValue = value as string;
+            Vector2 vec;
+            if (strValue != null)
+            {
+                vec = Vector2Ex.Parse(strValue);
+            }
+            else if (value is Vector2)
+            {
+                vec = (Vector2)value;
+            }
+            else
+            {
+                throw new InvalidCastException();
+            }
+            m_InputBoxX.SetValue(vec.x);
+            m_InputBoxY.SetValue(vec.y);
+            EnableEvents();
         }
     }
 }

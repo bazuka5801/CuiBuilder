@@ -60,7 +60,6 @@ public class PoolManager : MonoBehaviour {
         foreach (var handler in GetHandlers(obj))
             handler.OnPoolEnter();
         obj.SetActive(false);
-        obj.name = "Pool Object";
         obj.transform.SetParent(transform, false);
         Collection.Add(obj);
     }

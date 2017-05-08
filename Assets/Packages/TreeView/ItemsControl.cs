@@ -644,11 +644,11 @@ namespace Battlehub.UIControls
             get { return m_selectedItems; }
             set
             {
-                if (m_selectionLocked)
+                /*if (m_selectionLocked)
                 {
                     return;
                 }
-                m_selectionLocked = true;
+                m_selectionLocked = true;*/
 
                 IList oldSelectedItems = m_selectedItems;
                 if (value != null)
@@ -708,7 +708,7 @@ namespace Battlehub.UIControls
                     SelectionChanged(this, new SelectionChangedArgs(unselectedItems.ToArray(), selectedItems));
                 }
 
-                m_selectionLocked = false;
+                //m_selectionLocked = false;
             }
         }
 

@@ -59,7 +59,6 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISe
 
             var position = rTransform.GetParent().GetWorldPoint(rTransform.anchorMin);
             var size = rTransform.GetWorldSize();
-            Debug.Log(position + " " + size);
             transform.SetParent(newParent.transform, false);
             rTransform.SetPosition(rTransform.GetParent().GetLocalPoint(position));
             rTransform.SetWorldSize(size);

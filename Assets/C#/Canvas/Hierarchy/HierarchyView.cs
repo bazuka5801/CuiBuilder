@@ -135,7 +135,11 @@ public class HierarchyView : MonoBehaviour
     public static void ChangeName(GameObject item, string name)
     {
         item.name = name;
-        m_Instance.TreeView.GetItemContainer(item).GetComponentInChildren<Text>().text = name;
+        var tvi = m_Instance.TreeView.GetItemContainer(item);
+        if (tvi != null)
+        {
+            tvi.GetComponentInChildren<Text>().text = name;
+        }
     }
 
     public static void AddSelectionListener(EventHandler<SelectionChangedArgs> callback)
@@ -150,7 +154,11 @@ public class HierarchyView : MonoBehaviour
         //Do something on selection changed (just syncronized with editor's hierarchy for demo purposes)
         UnityEditor.Selection.objects = e.NewItems.OfType<GameObject>().ToArray();
 #endif
-
+        if (e.NewItems.Any(p=>Root.Contains((GameObject)p)))
+        {
+            TreeView.SelectedItems = e.NewItems.Where(p => !Root.Contains((GameObject)p));
+            return;
+        }
         foreach(var oldItem in e.OldItems.Cast<GameObject>())
         {
             SendSelectEvent(oldItem, (i) => i.OnUnselected());
@@ -296,18 +304,7 @@ public class HierarchyView : MonoBehaviour
     {
         
     }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            TreeView.SelectedItems = TreeView.Items.OfType<object>().Take(5).ToArray();
-        }
-        else if (Input.GetKeyDown(KeyCode.K))
-        {
-            TreeView.SelectedItem = null;
-        }
-    }
+    
 
     public static void AddChild(GameObject obj)
     {
