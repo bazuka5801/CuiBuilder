@@ -14,7 +14,7 @@ namespace Inspector.UIControls
         private void Awake()
         {
             m_InputBoxX.AddListener(x => SendEventCallback());
-            m_InputBoxY.AddListener(x => SendEventCallback());
+            m_InputBoxY.AddListener(y => SendEventCallback());
         }
 
         public void Set(Vector2 vec)

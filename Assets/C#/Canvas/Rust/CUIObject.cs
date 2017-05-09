@@ -14,8 +14,13 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
     public static List<CUIObject> Selection { get { return HierarchyView.GetSelectedItems().Select(o => Lookup[o]).ToList(); } }
 
     public string Name { get { return name; } }
-    List<ICuiComponent> Components = new List<ICuiComponent>();
+    List<ICuiComponent> Components = new List<ICuiComponent>() { new CuiRectTransformComponent() };
     public float FadeOut;
+
+    public T GetCuiComponent<T>() where T : ICuiComponent
+    {
+        return Components.OfType<T>().First();
+    }
 
     public CuiElement GetCuiElement()
     {

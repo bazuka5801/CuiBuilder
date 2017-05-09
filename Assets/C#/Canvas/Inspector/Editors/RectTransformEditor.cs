@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RectTransformEditor : ComponentEditor {
+public class RectTransformEditor : ComponentEditor<RectTransformComponent> {
 
     [InspectorField("position")]
     private void OnPositionChanged(object value)

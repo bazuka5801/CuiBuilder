@@ -24,6 +24,11 @@ public class InspectorView : MonoBehaviour {
         m_Components = GetComponentsInChildren<ComponentEditor>();
     }
 
+    public static IEnumerable<T> GetSelectedComponents<T>() where T : BaseComponent
+    {
+        return CUIObject.Selection.Select(obj => obj.GetComponent<T>()).Where(c => c);
+    }
+
     private void OnSelectionChanged(object sender, SelectionChangedArgs e)
     {
         if (e.NewItems == null || e.NewItems.Length == 0)

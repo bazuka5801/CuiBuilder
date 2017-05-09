@@ -18,7 +18,7 @@ public class FloatBox : InspectorField {
     public override object GetValue()
     {
         float num;
-        if (!float.TryParse(m_InputField.text, out num))
+        if (float.TryParse(m_InputField.text, out num))
         {
             return num;
         }

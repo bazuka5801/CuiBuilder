@@ -34,9 +34,12 @@ public static class RustCanvasEx
         var worldAnchorMax = transform.GetParent().GetWorldPoint(transform.anchorMin) + size;
         var localAnchorMax = transform.GetParent().GetLocalPoint(worldAnchorMax);
         transform.SetRect(transform.anchorMin, localAnchorMax);
-
     }
 
+    public static void SetLocalSize(this RectTransform transform, Vector2 size)
+    {
+        transform.SetRect(transform.anchorMin, transform.anchorMin+size);
+    }
     public static Vector2 GetLocalSize(this RectTransform transform)
     {
         return transform.anchorMax - transform.anchorMin;
@@ -68,7 +71,10 @@ public static class RustCanvasEx
     {
         return (((RectTransform)transform.parent).GetWorldSize().Div(new Vector2(Screen.width, Screen.height)));
     }
-
+    public static void SetPixelPosition(this RectTransform transform, Vector2 position)
+    {
+        transform.SetRect(transform.anchorMin + Vector2.Scale(transform.GetPixelShift(), position), transform.anchorMax-transform.anchorMin + Vector2.Scale(transform.GetPixelShift(), position));
+    }
     public static void SetPixelSize(this RectTransform transform, Vector2 size)
     {
         transform.SetRect(transform.anchorMin, transform.anchorMin+Vector2.Scale(transform.GetPixelShift(), size));
