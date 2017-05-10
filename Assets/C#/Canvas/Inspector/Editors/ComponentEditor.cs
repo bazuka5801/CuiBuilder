@@ -20,23 +20,24 @@ public class InspectorFieldAttribute : Attribute
 public abstract class ComponentEditor : MonoBehaviour
 {
    
+    
+    [SerializeField] private Dictionary<string, InspectorField> m_Fields = new Dictionary<string, InspectorField>();
 
     private bool m_Active;
-    [SerializeField] private Dictionary<string, InspectorField> m_Fields = new Dictionary<string, InspectorField>();
     [SerializeField] private bool m_Fixed;
 
     private Dictionary<string, MethodInfo> m_Hooks = new Dictionary<string, MethodInfo>();
-
+        
     protected InspectorField GetField(string fieldName)
     {
         return m_Fields[fieldName];
     }
-
+        
     public bool IsActive()
     {
         return m_Active;
     }
-
+        
     protected virtual void Awake()
     {
         if (!m_Fixed)
@@ -76,7 +77,7 @@ public abstract class ComponentEditor : MonoBehaviour
             }
         }
     }
-
+    
     protected virtual void OnFieldChanged(string field, object value)
     {
         MethodInfo method;

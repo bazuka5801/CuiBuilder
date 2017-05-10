@@ -20,7 +20,7 @@ public abstract class BaseComponent : MonoBehaviour
     }
 }
 
-public abstract class BaseComponent<T> : BaseComponent
+public class BaseComponent<T> : BaseComponent
     where T : ICuiComponent
 {
     public new T CuiComponent
