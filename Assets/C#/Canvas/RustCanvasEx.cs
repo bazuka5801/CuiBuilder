@@ -66,18 +66,46 @@ public static class RustCanvasEx
         return child;
     }
 
+    public static Vector2 GetWorldPixelShift(this RectTransform transform)
+    {
+        return Vector2.one.Div(new Vector2(Screen.width, Screen.height));
+    }
+    public static Vector2 GetPixel(this RectTransform transform, Vector2 worldAnchor)
+    {
+        return Vector2.Scale(worldAnchor, new Vector2(Screen.width, Screen.height));
+    }
 
-    public static Vector2 GetPixelShift(this RectTransform transform)
+    public static Vector2 GetPixelLocalPosition(this RectTransform transform)
+    {
+        return Vector2.Scale( transform.anchorMin,transform.GetParent().GetLocalPixelSize());
+    }
+    public static Vector2 GetPixelWorldPosition(this RectTransform transform)
+    {
+        return transform.GetPixel(transform.GetParent().GetWorldPoint(transform.anchorMin));
+    }
+
+    public static Vector2 GetWorldPixelSize(this RectTransform transform)
+    {
+        return transform.GetPixel(transform.GetWorldSize());
+    }
+
+    public static Vector2 GetLocalPixelSize(this RectTransform transform)
+    {
+        Debug.Log(transform.name + " " + transform.GetParent().GetWorldPoint(transform.anchorMax));
+        return transform.GetPixel(transform.GetParent().GetWorldPoint(transform.anchorMax) - transform.GetParent().GetWorldPoint(transform.anchorMin));
+    }
+
+    public static Vector2 GetLocalPixelShift(this RectTransform transform)
     {
         return (((RectTransform)transform.parent).GetWorldSize().Div(new Vector2(Screen.width, Screen.height)));
     }
-    public static void SetPixelPosition(this RectTransform transform, Vector2 position)
+    public static void SetPixelLocalPosition(this RectTransform transform, Vector2 position)
     {
-        transform.SetRect(transform.anchorMin + Vector2.Scale(transform.GetPixelShift(), position), transform.anchorMax-transform.anchorMin + Vector2.Scale(transform.GetPixelShift(), position));
+        transform.SetRect(Vector2.Scale(transform.GetLocalPixelShift(), position), transform.anchorMax-transform.anchorMin + Vector2.Scale(transform.GetLocalPixelShift(), position));
     }
     public static void SetPixelSize(this RectTransform transform, Vector2 size)
     {
-        transform.SetRect(transform.anchorMin, transform.anchorMin+Vector2.Scale(transform.GetPixelShift(), size));
+        transform.SetRect(transform.anchorMin, transform.anchorMin+Vector2.Scale(transform.GetLocalPixelShift(), size));
     }
 
 
@@ -111,6 +139,7 @@ public static class RustCanvasEx
     private static List<RectTransform> GetHierarchy(RectTransform transform)
     {
         var hierarchy = GetParents(transform);
+        if (transform.root != transform)
         hierarchy.Insert(0, transform);
         return hierarchy;
     }

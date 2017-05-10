@@ -111,7 +111,20 @@ public class ComponentEditor<T> : ComponentEditor
     where T : BaseComponent
 {
     private Dictionary<string, MethodInfo> m_ComponentHooks = new Dictionary<string, MethodInfo>();
-    
+
+    private static ComponentEditor<T> m_Instance;
+
+    public static ComponentEditor<T> Instance()
+    {
+        return m_Instance;
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        m_Instance = this;
+    }
+
     protected override void InitializeHooks()
     {
         base.InitializeHooks();
@@ -120,7 +133,6 @@ public class ComponentEditor<T> : ComponentEditor
 
     protected override void OnFieldChanged(string field, object value)
     {
-        base.OnFieldChanged(field, value);
         MethodInfo method;
         if (m_ComponentHooks.TryGetValue(field, out method))
         {
@@ -133,5 +145,6 @@ public class ComponentEditor<T> : ComponentEditor
         {
             throw new Exception("Field doesnt have handler in component");
         }
+        base.OnFieldChanged(field, value);
     }
 }

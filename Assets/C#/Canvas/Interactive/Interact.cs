@@ -22,6 +22,9 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private Vector2 mAnchorPos;
     private Vector2 mDelta;
     private GameObject m_TriggerContainer;
+    private static RectTransformEditor m_TransformEditor;
+
+    public static RectTransform Selected;
 
     private void Awake()
     {
@@ -30,6 +33,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         {
             BuildTriggers();
         }
+        if (m_TransformEditor == null)
+        {
+            m_TransformEditor = ((RectTransformEditor) ComponentEditor<RectTransformComponent>.Instance());
+        }
     }
 
     private void Update()
@@ -37,19 +44,19 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         if (isWindow) return;
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            transform.SetPosition(transform.anchorMin - transform.GetPixelShift().WithY(0));
+            transform.SetPosition(transform.anchorMin - transform.GetLocalPixelShift().WithY(0));
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            transform.SetPosition(transform.anchorMin + transform.GetPixelShift().WithY(0));
+            transform.SetPosition(transform.anchorMin + transform.GetLocalPixelShift().WithY(0));
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            transform.SetPosition(transform.anchorMin + transform.GetPixelShift().WithX(0));
+            transform.SetPosition(transform.anchorMin + transform.GetLocalPixelShift().WithX(0));
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            transform.SetPosition(transform.anchorMin - transform.GetPixelShift().WithX(0));
+            transform.SetPosition(transform.anchorMin - transform.GetLocalPixelShift().WithX(0));
         }
     }
 
@@ -65,9 +72,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private void OnMove()
     {
         transform.SetPosition(transform.GetMouseLocal() + mDelta - transform.GetLocalSize() * 0.5f, isWindow);
-        
+
+        TransformEditorUpdate();
     }
-    
+
     private void OnResize()
     {
         var size = (mAnchorPos - transform.GetMouseLocal()).Abs();
@@ -80,6 +88,15 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         transform.SetRect(transform.anchorMin, transform.anchorMin + size);
         var posDelta = mAnchorPos - transform.GetPivotLocalPosition(mAnchor);
         transform.SetPosition(transform.anchorMin + posDelta);
+        TransformEditorUpdate();
+    }
+
+    void TransformEditorUpdate()
+    {
+        if (isWindow) return;
+
+        m_TransformEditor.SendAnchorMinUpdate(transform.anchorMin);
+        m_TransformEditor.SendAnchorMaxUpdate(transform.anchorMax);
     }
 
     #endregion
@@ -157,6 +174,8 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     public void OnSelected()
     {
         BuildTriggers();
+        Selected = transform;
+        print(Selected.name);
     }
 
     public void OnUnselected()
