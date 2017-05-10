@@ -22,14 +22,11 @@ public class InspectorView : MonoBehaviour {
         m_rtcListener.RectTransformChanged += OnViewportRectTransformChanged;
         HierarchyView.AddSelectionListener(OnSelectionChanged);
         m_Components = GetComponentsInChildren<ComponentEditor>();
-<<<<<<< HEAD:Assets/C#/Canvas/Inspector/InspectorView.cs
     }
 
     public static IEnumerable<T> GetSelectedComponents<T>() where T : BaseComponent
     {
         return CUIObject.Selection.Select(obj => obj.GetComponent<T>()).Where(c => c);
-=======
->>>>>>> ad2b1da... Component Systemr 1/2:Assets/C#/Canvas/Inspector/InspectorView.cs
     }
 
     private void OnSelectionChanged(object sender, SelectionChangedArgs e)

@@ -14,11 +14,7 @@ namespace Inspector.UIControls
         private void Awake()
         {
             m_InputBoxX.AddListener(x => SendEventCallback());
-<<<<<<< HEAD
             m_InputBoxY.AddListener(y => SendEventCallback());
-=======
-            m_InputBoxY.AddListener(x => SendEventCallback());
->>>>>>> ad2b1da... Component Systemr 1/2
         }
 
         public void Set(Vector2 vec)

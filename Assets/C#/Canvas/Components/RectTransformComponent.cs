@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Oxide.Game.Rust.Cui;
 using UnityEngine;
 
-<<<<<<< HEAD
 public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
 {
     private RectTransform m_Transform;
@@ -24,7 +23,7 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
         else
         {
-            m_Transform.SetPosition(new Vector2(0.1f,0.1f));
+            m_Transform.SetPosition(new Vector2(0.1f, 0.1f));
         }
         CuiComponent.AnchorMin = value.ToString();
     }
@@ -35,7 +34,7 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         var type = value.GetType();
         if (type == typeof(Vector2))
         {
-            m_Transform.SetLocalSize((Vector2)value);
+            m_Transform.SetLocalSize((Vector2) value);
         }
         else
         {
@@ -43,17 +42,4 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
         CuiComponent.AnchorMin = value.ToString();
     }
-=======
-public class RectTransformComponent : BaseComponent<CuiRectTransformComponent> {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
->>>>>>> ad2b1da... Component Systemr 1/2
 }
