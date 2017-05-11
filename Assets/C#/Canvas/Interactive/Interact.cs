@@ -44,19 +44,19 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         if (isWindow) return;
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            transform.SetPosition(transform.anchorMin - transform.GetLocalPixelShift().WithY(0));
+            transform.SetPositionAnchor(transform.anchorMin - transform.GetPixelShiftLocal().WithY(0));
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            transform.SetPosition(transform.anchorMin + transform.GetLocalPixelShift().WithY(0));
+            transform.SetPositionAnchor(transform.anchorMin + transform.GetPixelShiftLocal().WithY(0));
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
-            transform.SetPosition(transform.anchorMin + transform.GetLocalPixelShift().WithX(0));
+            transform.SetPositionAnchor(transform.anchorMin + transform.GetPixelShiftLocal().WithX(0));
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            transform.SetPosition(transform.anchorMin - transform.GetLocalPixelShift().WithX(0));
+            transform.SetPositionAnchor(transform.anchorMin - transform.GetPixelShiftLocal().WithX(0));
         }
     }
 
@@ -64,14 +64,14 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
     private void OnPointerDown(Vector2 interactPivot)
     {
-        mDelta = transform.anchorMin + transform.GetLocalSize() * 0.5f - transform.GetMouseLocal();
+        mDelta = transform.anchorMin + transform.GetSizeLocal() * 0.5f - transform.GetMouseLocal();
         mInteractPoint = interactPivot;
         mAnchorPos = transform.GetPivotLocalPosition(mAnchor);
     }
 
     private void OnMove()
     {
-        transform.SetPosition(transform.GetMouseLocal() + mDelta - transform.GetLocalSize() * 0.5f, isWindow);
+        transform.SetPositionAnchor(transform.GetMouseLocal() + mDelta - transform.GetSizeLocal() * 0.5f, isWindow);
 
         TransformEditorUpdate();
     }
@@ -79,7 +79,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private void OnResize()
     {
         var size = (mAnchorPos - transform.GetMouseLocal()).Abs();
-        var currentSize = transform.GetLocalSize();
+        var currentSize = transform.GetSizeLocal();
 
         for (int j = 0; j < 2; j++)
             if (Mathf.Approximately(mInteractPoint[j], 0.5f))
@@ -87,7 +87,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
         transform.SetRect(transform.anchorMin, transform.anchorMin + size);
         var posDelta = mAnchorPos - transform.GetPivotLocalPosition(mAnchor);
-        transform.SetPosition(transform.anchorMin + posDelta);
+        transform.SetPositionAnchor(transform.anchorMin + posDelta);
         TransformEditorUpdate();
     }
 

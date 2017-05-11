@@ -32,12 +32,12 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent> {
     {
         Vector2? anchorMin = GetField("anchormin").GetValue() as Vector2?;
         if (anchorMin==null)return;
-        var pixelLocalPosition = Interact.Selected.GetPixelLocalPosition();
+        var pixelLocalPosition = Interact.Selected.GetPositionPixelLocal();
         GetField("position").SetValue(pixelLocalPosition);
 
         Vector2? anchorMax = GetField("anchormax").GetValue() as Vector2?;
         if (anchorMax == null) return;
-        var localSize = Interact.Selected.GetLocalPixelSize();
+        var localSize = Interact.Selected.GetSizePixelLocal();
         GetField("size").SetValue(localSize);
 
     }
