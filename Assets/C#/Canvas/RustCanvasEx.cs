@@ -21,6 +21,7 @@ public static class RustCanvasEx
         return child;
     }
 
+    private static int x = 0;
     public static void SetRect( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
         bool borderCollision = false )
     {
@@ -32,10 +33,14 @@ public static class RustCanvasEx
             if (anchorMax.x > 1) shift.x = -anchorMax.x + 1;
             if (anchorMax.y > 1) shift.y = -anchorMax.y + 1;
         }
+
+        Vector2 lastOffsetMin = transform.offsetMin;
+        Vector2 lastOffsetMax = transform.offsetMax;
+
         transform.anchorMin = anchorMin + shift;
         transform.anchorMax = anchorMax + shift;
-        transform.offsetMin = Vector2.zero;
-        transform.offsetMax = Vector2.zero;
+        transform.offsetMin = lastOffsetMin;
+        transform.offsetMax = lastOffsetMax;
     }
 
     #region Position

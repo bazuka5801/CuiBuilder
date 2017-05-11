@@ -122,6 +122,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         m_TriggerContainer = transform.CreateChild( "_triggers" );
         RectTransform tgrTransform = (RectTransform) m_TriggerContainer.transform;
         tgrTransform.SetRect( Vector2.zero, Vector2.one );
+        tgrTransform.offsetMin = tgrTransform.offsetMax = Vector2.zero;
 
         foreach (var anchor in triggersEventArgs)
         {

@@ -84,10 +84,6 @@ public abstract class ComponentEditor : MonoBehaviour
         {
             method.Invoke(this, new object[] {value});
         }
-        else
-        {
-            throw new Exception("Field doesnt have handler");
-        }
     }
 
     protected Dictionary<string, MethodInfo> GetInspectorFieldHandlers(Type type)

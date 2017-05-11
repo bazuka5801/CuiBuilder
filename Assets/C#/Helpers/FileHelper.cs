@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using UnityEngine;
 
-public static class FileEx {
+public static class FileHelper {
 
     public static Texture2D LoadImage( string filePath )
     {

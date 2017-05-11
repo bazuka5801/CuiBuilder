@@ -68,4 +68,40 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
             CuiComponent.AnchorMax = string.Format("{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y);
         }
     }
+
+
+    [InspectorField( "offsetmin" )]
+    private void OnOffsetMinChanged( object value )
+    {
+        var type = value.GetType();
+        if (type == typeof( Vector2 ))
+        {
+            var vec = (Vector2) value;
+            m_Transform.offsetMin = (Vector2) value;
+            CuiComponent.OffsetMin = string.Format( "{0} {1}", vec.x, vec.y );
+        }
+        else
+        {
+            m_Transform.offsetMin = Vector2.zero;
+            CuiComponent.OffsetMin = value.ToString();
+        }
+    }
+
+    [InspectorField( "offsetmax" )]
+    private void OnOffsetMaxChanged( object value )
+    {
+        var type = value.GetType();
+        if (type == typeof( Vector2 ))
+        {
+            var vec = (Vector2) value;
+            m_Transform.offsetMax = (Vector2) value;
+            CuiComponent.OffsetMax = string.Format( "{0} {1}", vec.x, vec.y );
+        }
+        else
+        {
+            m_Transform.offsetMax = Vector2.zero;
+            CuiComponent.OffsetMax = value.ToString();
+        }
+    }
+    
 }

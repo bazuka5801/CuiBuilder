@@ -16,7 +16,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
 
     public T GetCuiComponent<T>() where T : ICuiComponent
     {
-        return Components.OfType<T>().First();
+        return Components.OfType<T>().Single();
     }
     
     public CuiElement GetCuiElement()
@@ -50,5 +50,13 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
     public void OnPoolLeave()
     {
         Lookup[gameObject] = this;
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.C))
+        {
+            Debug.Log(CuiHelper.ToJson(new CuiElementContainer() { GetCuiElement() }));
+        }
     }
 }

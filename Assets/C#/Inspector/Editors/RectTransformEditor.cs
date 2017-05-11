@@ -60,4 +60,5 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent>
     {
         OnPixelChanged();
     }
+
 }
