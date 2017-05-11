@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using UnityEngine.UI;
 
 namespace UnityEditor.UI
 {
-	[CustomEditor(typeof(BoxSlider), true)]
+    [CustomEditor(typeof(BoxSlider), true)]
 	[CanEditMultipleObjects]
 	public class BoxSliderEditor : SelectableEditor
 	{

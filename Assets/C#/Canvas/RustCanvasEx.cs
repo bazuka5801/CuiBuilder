@@ -5,20 +5,24 @@ using UnityEngine.EventSystems;
 
 public static class RustCanvasEx
 {
-    
-    private static Vector2 ScreenVec { get { return new Vector2(Screen.width, Screen.height); } }
+
+    private static Vector2 ScreenVec
+    {
+        get { return new Vector2( Screen.width, Screen.height ); }
+    }
 
     #region RectTransform
 
-    public static GameObject CreateChild(this RectTransform transform, string name)
+    public static GameObject CreateChild( this RectTransform transform, string name )
     {
-        var child = new GameObject(name);
-        child.transform.SetParent(transform, false);
+        var child = new GameObject( name );
+        child.transform.SetParent( transform, false );
         child.AddComponent<RectTransform>();
         return child;
     }
 
-    public static void SetRect(this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax, bool borderCollision = false)
+    public static void SetRect( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
+        bool borderCollision = false )
     {
         Vector2 shift = Vector2.zero;
         if (borderCollision)
@@ -37,33 +41,34 @@ public static class RustCanvasEx
     #region Position
 
     #region Anchor
-    
-    public static void SetPositionAnchor(this RectTransform transform, Vector2 anchorMin, bool borderCollision = false)
+
+    public static void SetPositionAnchor( this RectTransform transform, Vector2 anchorMin, bool borderCollision = false )
     {
-        SetRect(transform, anchorMin, transform.GetSizeLocal() + anchorMin, borderCollision);
+        SetRect( transform, anchorMin, transform.GetSizeLocal() + anchorMin, borderCollision );
     }
 
     #endregion
 
     #region Pixel
 
-    public static Vector2 GetPositionPixelLocal(this RectTransform transform)
+    public static Vector2 GetPositionPixelLocal( this RectTransform transform )
     {
-        return Vector2.Scale(transform.anchorMin, transform.GetParent().GetSizePixelLocal());
+        return Vector2.Scale( transform.anchorMin, transform.GetParent().GetSizePixelLocal() );
     }
 
-    public static Vector2 GetPositionPixelWorld(this RectTransform transform)
+    public static Vector2 GetPositionPixelWorld( this RectTransform transform )
     {
-        return transform.GetPixel(transform.GetParent().GetWorldPoint(transform.anchorMin));
+        return transform.GetPixel( transform.GetParent().GetWorldPoint( transform.anchorMin ) );
     }
 
-    public static void SetPositionPixelLocal(this RectTransform transform, Vector2 position)
+    public static void SetPositionPixelLocal( this RectTransform transform, Vector2 position )
     {
-        transform.SetRect(Vector2.Scale(transform.GetPixelShiftLocal(), position), transform.anchorMax - transform.anchorMin + Vector2.Scale(transform.GetPixelShiftLocal(), position));
+        transform.SetRect( Vector2.Scale( transform.GetPixelShiftLocal(), position ),
+            transform.anchorMax - transform.anchorMin + Vector2.Scale( transform.GetPixelShiftLocal(), position ) );
     }
 
     #endregion
-    
+
     #endregion
 
 
@@ -71,103 +76,104 @@ public static class RustCanvasEx
 
     #region Anchor
 
-    public static Vector2 GetSizeLocal(this RectTransform transform)
+    public static Vector2 GetSizeLocal( this RectTransform transform )
     {
         return transform.anchorMax - transform.anchorMin;
     }
 
-    public static Vector2 GetSizeWorld(this RectTransform transform)
+    public static Vector2 GetSizeWorld( this RectTransform transform )
     {
-        var worldSize = GetSizeLocal(transform);
-        foreach (var parent in GetParents(transform))
-            worldSize = Vector2.Scale(worldSize, parent.GetSizeLocal());
+        var worldSize = GetSizeLocal( transform );
+        foreach (var parent in GetParents( transform ))
+            worldSize = Vector2.Scale( worldSize, parent.GetSizeLocal() );
         return worldSize;
     }
 
-    public static void SetSizeWorld(this RectTransform transform, Vector2 size)
+    public static void SetSizeWorld( this RectTransform transform, Vector2 size )
     {
-        var worldAnchorMax = transform.GetParent().GetWorldPoint(transform.anchorMin) + size;
-        var localAnchorMax = transform.GetParent().GetLocalPoint(worldAnchorMax);
-        transform.SetRect(transform.anchorMin, localAnchorMax);
+        var worldAnchorMax = transform.GetParent().GetWorldPoint( transform.anchorMin ) + size;
+        var localAnchorMax = transform.GetParent().GetLocalPoint( worldAnchorMax );
+        transform.SetRect( transform.anchorMin, localAnchorMax );
     }
 
-    public static void SetSizeLocal(this RectTransform transform, Vector2 size)
+    public static void SetSizeLocal( this RectTransform transform, Vector2 size )
     {
-        transform.SetRect(transform.anchorMin, transform.anchorMin + size);
+        transform.SetRect( transform.anchorMin, transform.anchorMin + size );
     }
 
     #endregion
-    
+
     #region Pixel
-    
-    public static Vector2 GetSizePixelLocal(this RectTransform transform)
+
+    public static Vector2 GetSizePixelLocal( this RectTransform transform )
     {
-        return transform.GetPixel(transform.GetParent().GetWorldPoint(transform.anchorMax) - transform.GetParent().GetWorldPoint(transform.anchorMin));
+        return transform.GetPixel( transform.GetParent().GetWorldPoint( transform.anchorMax ) -
+                                  transform.GetParent().GetWorldPoint( transform.anchorMin ) );
     }
 
-    public static Vector2 GetSizePixelWorld(this RectTransform transform)
+    public static Vector2 GetSizePixelWorld( this RectTransform transform )
     {
-        return transform.GetPixel(transform.GetSizeWorld());
+        return transform.GetPixel( transform.GetSizeWorld() );
     }
 
 
-    public static void SetSizePixel(this RectTransform transform, Vector2 size)
+    public static void SetSizePixel( this RectTransform transform, Vector2 size )
     {
-        transform.SetRect(transform.anchorMin, transform.anchorMin + Vector2.Scale(transform.GetPixelShiftLocal(), size));
+        transform.SetRect( transform.anchorMin,
+            transform.anchorMin + Vector2.Scale( transform.GetPixelShiftLocal(), size ) );
     }
 
     #endregion
-    
+
     #endregion
 
     #region Mouse
 
-    public static Vector2 GetMouseLocal(this RectTransform transform)
+    public static Vector2 GetMouseLocal( this RectTransform transform )
     {
-        return transform.GetParent().GetLocalPoint(RustCanvas.GetMouseAnchor());
+        return transform.GetParent().GetLocalPoint( RustCanvas.GetMouseAnchor() );
     }
 
     #endregion
 
     #region Pixel
 
-
-    public static Vector2 GetPixel(this RectTransform transform, Vector2 worldAnchor)
+    public static Vector2 GetPixel( this RectTransform transform, Vector2 worldAnchor )
     {
-        return Vector2.Scale(worldAnchor, ScreenVec);
+        return Vector2.Scale( worldAnchor, ScreenVec );
     }
 
-    public static Vector2 GetPixelShiftWorld(this RectTransform transform)
+    public static Vector2 GetPixelShiftWorld( this RectTransform transform )
     {
-        return Vector2.one.Div(ScreenVec);
+        return Vector2.one.Div( ScreenVec );
     }
 
-    public static Vector2 GetPixelShiftLocal(this RectTransform transform)
+    public static Vector2 GetPixelShiftLocal( this RectTransform transform )
     {
-        return (((RectTransform)transform.parent).GetSizeWorld().Div(ScreenVec));
+        return ( ( (RectTransform) transform.parent ).GetSizeWorld().Div( ScreenVec ) );
     }
 
     #endregion
-    
+
     #endregion
 
     #region Transform Point
 
-    public static Vector2 GetWorldPoint(this RectTransform transform, Vector2 localPoint)
+    public static Vector2 GetWorldPoint( this RectTransform transform, Vector2 localPoint )
     {
-        foreach (var parent in GetHierarchy(transform))
-            localPoint = Vector2.Scale(localPoint, parent.GetSizeLocal())+parent.anchorMin;
+        foreach (var parent in GetHierarchy( transform ))
+            localPoint = Vector2.Scale( localPoint, parent.GetSizeLocal() ) + parent.anchorMin;
         return localPoint;
     }
 
-    public static Vector2 GetLocalPoint(this RectTransform transform, Vector2 point)
+    public static Vector2 GetLocalPoint( this RectTransform transform, Vector2 point )
     {
-        var hierarchy = GetHierarchy(transform);
+        var hierarchy = GetHierarchy( transform );
         hierarchy.Reverse();
         foreach (var hierarchyElement in hierarchy)
         {
             point -= hierarchyElement.anchorMin;
-            point = point.Div(hierarchyElement.GetSizeLocal());
+            point = point.Div( hierarchyElement.GetSizeLocal() );
         }
         return point;
     }
@@ -176,15 +182,15 @@ public static class RustCanvasEx
 
     #region Hierarchy Functions
 
-    private static List<RectTransform> GetHierarchy(RectTransform transform)
+    private static List<RectTransform> GetHierarchy( RectTransform transform )
     {
-        var hierarchy = GetParents(transform);
+        var hierarchy = GetParents( transform );
         if (transform.root != transform)
-        hierarchy.Insert(0, transform);
+            hierarchy.Insert( 0, transform );
         return hierarchy;
     }
 
-    private static List<RectTransform> GetParents(RectTransform transform)
+    private static List<RectTransform> GetParents( RectTransform transform )
     {
         var parents = new List<RectTransform>();
         RectTransform current = transform;
@@ -192,12 +198,12 @@ public static class RustCanvasEx
         {
             if (transform.root == current || transform.root == current.parent) break;
             current = (RectTransform) current.parent;
-            parents.Add(current);
+            parents.Add( current );
         }
         return parents;
     }
 
-    public static RectTransform GetParent(this Transform transform)
+    public static RectTransform GetParent( this Transform transform )
     {
         return (RectTransform) transform.parent;
     }
@@ -206,25 +212,26 @@ public static class RustCanvasEx
 
     #region Pivot
 
-    public static Vector2 GetPivotLocalPosition(this RectTransform transform, Vector2 pivot)
+    public static Vector2 GetPivotLocalPosition( this RectTransform transform, Vector2 pivot )
     {
-        return transform.anchorMin + Vector2.Scale(transform.GetSizeLocal(), pivot);
+        return transform.anchorMin + Vector2.Scale( transform.GetSizeLocal(), pivot );
     }
 
-    public static Vector2 GetPivotWorldPosition(this RectTransform transform, Vector2 pivot)
+    public static Vector2 GetPivotWorldPosition( this RectTransform transform, Vector2 pivot )
     {
-        return transform.GetParent().GetWorldPoint(transform.anchorMin + Vector2.Scale(transform.GetSizeLocal(), pivot));
+        return transform.GetParent()
+            .GetWorldPoint( transform.anchorMin + Vector2.Scale( transform.GetSizeLocal(), pivot ) );
     }
 
     #endregion
-    
+
     #region EventTrigger
 
-    public static void Add(this EventTrigger eventTrigger, EventTriggerType eventID, Action callback)
+    public static void Add( this EventTrigger eventTrigger, EventTriggerType eventID, Action callback )
     {
         EventTrigger.Entry eventEntry = new EventTrigger.Entry() { eventID = eventID };
-        eventEntry.callback.AddListener(e => callback());
-        eventTrigger.triggers.Add(eventEntry);
+        eventEntry.callback.AddListener( e => callback() );
+        eventTrigger.triggers.Add( eventEntry );
     }
 
     #endregion

@@ -50,6 +50,10 @@ public class HexColorField : MonoBehaviour
             return string.Format("#{0:X2}{1:X2}{2:X2}", color.r, color.g, color.b);
     }
 
+
+    
+
+
     public static bool HexToColor(string hex, out Color32 color)
     {
         // Check if this is a valid hex string (# is optional)
