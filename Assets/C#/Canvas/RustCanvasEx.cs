@@ -9,7 +9,15 @@ public static class RustCanvasEx
     private static Vector2 ScreenVec { get { return new Vector2(Screen.width, Screen.height); } }
 
     #region RectTransform
-    
+
+    public static GameObject CreateChild(this RectTransform transform, string name)
+    {
+        var child = new GameObject(name);
+        child.transform.SetParent(transform, false);
+        child.AddComponent<RectTransform>();
+        return child;
+    }
+
     public static void SetRect(this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax, bool borderCollision = false)
     {
         Vector2 shift = Vector2.zero;
@@ -89,13 +97,9 @@ public static class RustCanvasEx
     }
 
     #endregion
-
-
+    
     #region Pixel
-
-
-
-
+    
     public static Vector2 GetSizePixelLocal(this RectTransform transform)
     {
         return transform.GetPixel(transform.GetParent().GetWorldPoint(transform.anchorMax) - transform.GetParent().GetWorldPoint(transform.anchorMin));
@@ -112,10 +116,8 @@ public static class RustCanvasEx
         transform.SetRect(transform.anchorMin, transform.anchorMin + Vector2.Scale(transform.GetPixelShiftLocal(), size));
     }
 
-
     #endregion
-
-
+    
     #endregion
 
     #region Mouse
@@ -145,21 +147,8 @@ public static class RustCanvasEx
         return (((RectTransform)transform.parent).GetSizeWorld().Div(ScreenVec));
     }
 
-
     #endregion
-
-
-    public static GameObject CreateChild(this RectTransform transform, string name)
-    {
-        var child = new GameObject(name);
-        child.transform.SetParent(transform, false);
-        child.AddComponent<RectTransform>();
-        return child;
-    }
-
     
-
-
     #endregion
 
     #region Transform Point
