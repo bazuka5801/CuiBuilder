@@ -33,7 +33,7 @@ public class ResolutionManager : MonoBehaviour {
     /// Выставляет разрешение
     /// </summary>
     /// <param name="index">1 - 16:9, 2 - 16:10, 3 - 5:4, 4 - 4:3</param>
-    public static void SetResolution( int index )
+    public void SetResolution( int index )
     {
         var resolution = m_Instance.m_Resolutions[ index];
         Screen.SetResolution(Convert.ToInt32(resolution[0]), Convert.ToInt32(resolution[1]), Screen.fullScreen, Screen.currentResolution.refreshRate);

@@ -175,7 +175,6 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     {
         BuildTriggers();
         Selected = transform;
-        print( Selected.name );
     }
 
     public void OnUnselected()
