@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -40,22 +41,23 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
     private void Update()
     {
-        if (isWindow) return;
-        if (Input.GetKeyDown( KeyCode.LeftArrow ))
+        if (isWindow || !HierarchyView.GetSelectedItems().Contains(gameObject)) return;
+        var leftControl = Input.GetKey(KeyCode.LeftControl);
+        if (Input.GetKeyDown( KeyCode.LeftArrow ) || ( Input.GetKey( KeyCode.LeftArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) );
+            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }
-        if (Input.GetKeyDown( KeyCode.RightArrow ))
+        if (Input.GetKeyDown( KeyCode.RightArrow ) || (Input.GetKey(KeyCode.RightArrow) && leftControl ) )
         {
-            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) );
+            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }
-        if (Input.GetKeyDown( KeyCode.UpArrow ))
+        if (Input.GetKeyDown( KeyCode.UpArrow ) || ( Input.GetKey( KeyCode.UpArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithX( 0 ) );
+            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
         }
-        if (Input.GetKeyDown( KeyCode.DownArrow ))
+        if (Input.GetKeyDown( KeyCode.DownArrow ) || ( Input.GetKey( KeyCode.DownArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) );
+            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
         }
     }
 

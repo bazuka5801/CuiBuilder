@@ -37,5 +37,6 @@ public class ResolutionManager : MonoBehaviour {
     {
         var resolution = m_Instance.m_Resolutions[ index];
         Screen.SetResolution(Convert.ToInt32(resolution[0]), Convert.ToInt32(resolution[1]), Screen.fullScreen, Screen.currentResolution.refreshRate);
+        BackgroundManager.Instance.SetBackground(GetAspect());
     }
 }

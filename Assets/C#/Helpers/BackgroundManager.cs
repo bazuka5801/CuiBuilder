@@ -9,7 +9,7 @@ public class BackgroundManager : MonoBehaviour
 
     Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
     private Image m_Image;
-    private bool m_Inventory;
+    private bool m_Inventory = false;
 
     private void Awake()
     {
@@ -29,9 +29,9 @@ public class BackgroundManager : MonoBehaviour
         SetBackground( ResolutionManager.GetAspect() );
     }
 
-    public void SetInv( bool inv )
+    public void ToggleInventory()
     {
-        m_Inventory = inv;
+        m_Inventory = !m_Inventory;
         SetBackground( ResolutionManager.GetAspect() );
     }
 
