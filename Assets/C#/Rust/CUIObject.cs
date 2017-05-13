@@ -16,7 +16,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
 
     public T GetCuiComponent<T>() where T : ICuiComponent
     {
-        return Components.OfType<T>().Single();
+        return Components.OfType<T>().FirstOrDefault();
     }
     
     public CuiElement GetCuiElement()

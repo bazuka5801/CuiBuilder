@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,9 +19,7 @@ public class InspectorFieldAttribute : Attribute
 
 public abstract class ComponentEditor : MonoBehaviour
 {
-   
-    
-    [SerializeField] private Dictionary<string, InspectorField> m_Fields = new Dictionary<string, InspectorField>();
+    private Dictionary<string, InspectorField> m_Fields = new Dictionary<string, InspectorField>();
 
     private bool m_Active;
     [SerializeField] private bool m_Fixed;
@@ -41,23 +40,25 @@ public abstract class ComponentEditor : MonoBehaviour
     {
         if (!m_Fixed)
         {
-            GetComponentInChildren<Toggle>().onValueChanged.AddListener(OnStateChanged);
+            GetComponentInChildren<Toggle>().onValueChanged.AddListener(SetState);
         }
         InitializeHooks();
         AddChangedHandlers();
     }
+    
 
-    private void OnStateChanged(bool state)
+    protected void SetState(bool state)
     {
         m_Active = state;
         foreach (Transform field in base.transform)
         {
             if (field.tag != "Header")
             {
-                field.gameObject.SetActive(state);
+                field.gameObject.SetActive( state );
             }
         }
     }
+
 
     protected virtual void InitializeHooks()
     {
@@ -76,7 +77,9 @@ public abstract class ComponentEditor : MonoBehaviour
             }
         }
     }
-    
+
+    public abstract void OnItemsSelected( List<CUIObject> newItems);
+
     protected virtual void OnFieldChanged(string field, object value)
     {
         MethodInfo method;
@@ -102,14 +105,15 @@ public abstract class ComponentEditor : MonoBehaviour
     }
 }
 
-public class ComponentEditor<T> : ComponentEditor
-    where T : BaseComponent
+public abstract class ComponentEditor<CT, CCT> : ComponentEditor
+    where CCT : ICuiComponent
+    where CT : BaseComponent<CCT>
 {
     private Dictionary<string, MethodInfo> m_ComponentHooks = new Dictionary<string, MethodInfo>();
 
-    private static ComponentEditor<T> m_Instance;
+    private static ComponentEditor<CT, CCT> m_Instance;
 
-    public static ComponentEditor<T> Instance()
+    public static ComponentEditor<CT, CCT> Instance()
     {
         return m_Instance;
     }
@@ -123,7 +127,7 @@ public class ComponentEditor<T> : ComponentEditor
     protected override void InitializeHooks()
     {
         base.InitializeHooks();
-        m_ComponentHooks = GetInspectorFieldHandlers<T>();
+        m_ComponentHooks = GetInspectorFieldHandlers<CT>();
     }
 
     protected override void OnFieldChanged(string field, object value)
@@ -131,7 +135,7 @@ public class ComponentEditor<T> : ComponentEditor
         MethodInfo method;
         if (m_ComponentHooks.TryGetValue(field, out method))
         {
-            foreach (var comp in InspectorView.GetSelectedComponents<T>())
+            foreach (var comp in InspectorView.GetSelectedComponents<CT>())
             {
                 method.Invoke(comp, new object[] {value});
             }
@@ -142,4 +146,18 @@ public class ComponentEditor<T> : ComponentEditor
         }
         base.OnFieldChanged(field, value);
     }
+
+    public abstract void Load(CCT component);
+
+    public override void OnItemsSelected(List<CUIObject> newItems)
+    {
+        if (newItems.Count == 0 || newItems.Any(cuiObject => cuiObject.GetCuiComponent<CCT>() == null))
+        {
+            SetState(false);
+            return;
+        }
+        SetState( true );
+        Load(newItems.Last().GetCuiComponent<CCT>());
+    }
+
 }

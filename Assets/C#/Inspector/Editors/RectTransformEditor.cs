@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Oxide.Game.Rust.Cui;
+using UnityEngine;
 
-public class RectTransformEditor : ComponentEditor<RectTransformComponent>
+public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRectTransformComponent>
 {
 
 
@@ -61,4 +62,11 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent>
         OnPixelChanged();
     }
 
+    public override void Load(CuiRectTransformComponent component)
+    {
+        GetField("anchormin").SetValue(component.AnchorMin);
+        GetField("anchormax").SetValue(component.AnchorMax);
+        GetField("offsetmin").SetValue(component.OffsetMin);
+        GetField("offsetmax").SetValue(component.OffsetMax);
+    }
 }

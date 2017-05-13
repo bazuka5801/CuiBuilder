@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -35,19 +36,19 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         }
         if (m_TransformEditor == null)
         {
-            m_TransformEditor = ( (RectTransformEditor) ComponentEditor<RectTransformComponent>.Instance() );
+            m_TransformEditor = ( (RectTransformEditor) ComponentEditor<RectTransformComponent, CuiRectTransformComponent>.Instance() );
         }
     }
 
     private void Update()
     {
-        if (isWindow || !HierarchyView.GetSelectedItems().Contains(gameObject)) return;
-        var leftControl = Input.GetKey(KeyCode.LeftControl);
+        if (isWindow || !HierarchyView.GetSelectedItems().Contains( gameObject )) return;
+        var leftControl = Input.GetKey( KeyCode.LeftControl );
         if (Input.GetKeyDown( KeyCode.LeftArrow ) || ( Input.GetKey( KeyCode.LeftArrow ) && leftControl ))
         {
             transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }
-        if (Input.GetKeyDown( KeyCode.RightArrow ) || (Input.GetKey(KeyCode.RightArrow) && leftControl ) )
+        if (Input.GetKeyDown( KeyCode.RightArrow ) || ( Input.GetKey( KeyCode.RightArrow ) && leftControl ))
         {
             transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }

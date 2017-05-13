@@ -30,6 +30,11 @@ public class InspectorView : MonoBehaviour {
 
     private void OnSelectionChanged(object sender, SelectionChangedArgs e)
     {
+        var newItems = e.NewItems.Select(o => ((GameObject) o).GetComponent<CUIObject>()).ToList();
+        foreach (var component in m_Components)
+        {
+            component.OnItemsSelected(newItems);
+        }
         if (e.NewItems == null || e.NewItems.Length == 0)
         {
             HideAllPanels();
