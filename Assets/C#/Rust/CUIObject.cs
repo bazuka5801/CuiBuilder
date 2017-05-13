@@ -26,7 +26,9 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
             Name = Name
         };
         if (!Mathf.Approximately(FadeOut, 0f))
+        {
             element.FadeOut = FadeOut;
+        }
         foreach (var component in Components)
         {
             element.Components.Add(component);
@@ -43,7 +45,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
     {
         name = "CuiElement";
         FadeOut = 0f;
-        Components = new List<ICuiComponent>() { new CuiRectTransformComponent() };
+        Components.RemoveAll(p => p.GetType() != typeof(CuiRectTransformComponent));
         Lookup.Remove(gameObject);
     }
 
