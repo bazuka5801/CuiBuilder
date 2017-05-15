@@ -31,7 +31,7 @@ namespace Inspector.UIControls
         public override void SetValue(object value)
         {
             DisableEvents();
-            m_InputField.text = value.ToString();
+            m_InputField.text = value == null ? "" : value.ToString();
             EnableEvents();
         }
     }

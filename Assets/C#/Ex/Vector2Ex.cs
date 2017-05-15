@@ -1,4 +1,9 @@
-﻿namespace UnityEngine
+﻿using System;
+using System.Reflection;
+using System.Reflection.Emit;
+using System.Runtime.InteropServices;
+
+namespace UnityEngine
 {
     public static class Vector2Ex
     {
@@ -30,6 +35,10 @@
         public static Vector2 Div(this Vector2 vec, Vector2 vec2)
         {
             return new Vector2(vec.x / vec2.x, vec.y / vec2.y);
+        }
+        public static string ToString(Vector2 vec)
+        {
+            return string.Format("{0} {1}", vec.x, vec.y);
         }
     }
 }

@@ -20,8 +20,7 @@ public static class RustCanvasEx
         child.AddComponent<RectTransform>();
         return child;
     }
-
-    private static int x = 0;
+    
     public static void SetRect( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
         bool borderCollision = false )
     {
@@ -42,14 +41,30 @@ public static class RustCanvasEx
         transform.offsetMin = lastOffsetMin;
         transform.offsetMax = lastOffsetMax;
     }
+    public static void SetRectWorld( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
+        bool borderCollision = false )
+    {
+        anchorMin = transform.GetParent().GetLocalPoint(anchorMin);
+        anchorMax = transform.GetParent().GetLocalPoint( anchorMax );
+        SetRect(transform, anchorMin, anchorMax, borderCollision);
+    }
 
     #region Position
 
     #region Anchor
 
-    public static void SetPositionAnchor( this RectTransform transform, Vector2 anchorMin, bool borderCollision = false )
+    public static void SetPositionAnchorLocal( this RectTransform transform, Vector2 anchorMin, bool borderCollision = false )
     {
         SetRect( transform, anchorMin, transform.GetSizeLocal() + anchorMin, borderCollision );
+    }
+    public static void SetPositionAnchorWorld( this RectTransform transform, Vector2 anchorMin, bool borderCollision = false )
+    {
+        SetRect( transform, transform.GetParent().GetLocalPoint(anchorMin), transform.GetParent().GetLocalPoint( transform.GetSizeLocal() + anchorMin ), borderCollision );
+    }
+
+    public static Vector2 GetPositionAnchorWorld(this RectTransform transform)
+    {
+        return transform.GetParent().GetWorldPoint( transform.anchorMin );
     }
 
     #endregion
@@ -222,10 +237,9 @@ public static class RustCanvasEx
         return transform.anchorMin + Vector2.Scale( transform.GetSizeLocal(), pivot );
     }
 
-    public static Vector2 GetPivotWorldPosition( this RectTransform transform, Vector2 pivot )
+    public static Vector2 GetPivotPositionWorld( this RectTransform transform, Vector2 pivot )
     {
-        return transform.GetParent()
-            .GetWorldPoint( transform.anchorMin + Vector2.Scale( transform.GetSizeLocal(), pivot ) );
+        return transform.GetParent().GetWorldPoint( pivot );
     }
 
     #endregion

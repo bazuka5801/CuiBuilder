@@ -23,9 +23,12 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private Vector2 mAnchorPos;
     private Vector2 mDelta;
     private GameObject m_TriggerContainer;
-    private static RectTransformEditor m_TransformEditor;
-
-    public static RectTransform Selected;
+    private static RectTransformEditor m_TransformEditor { get
+        {
+            return ((RectTransformEditor) ComponentEditor<RectTransformComponent, CuiRectTransformComponent>
+                .Instance());
+        } }
+    
 
     private void Awake()
     {
@@ -34,31 +37,27 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         {
             BuildTriggers();
         }
-        if (m_TransformEditor == null)
-        {
-            m_TransformEditor = ( (RectTransformEditor) ComponentEditor<RectTransformComponent, CuiRectTransformComponent>.Instance() );
-        }
     }
 
     private void Update()
     {
-        if (isWindow || !HierarchyView.GetSelectedItems().Contains( gameObject )) return;
+        if (isWindow || InspectorView.SelectedItem == null || InspectorView.SelectedItem.gameObject != gameObject) return;
         var leftControl = Input.GetKey( KeyCode.LeftControl );
         if (Input.GetKeyDown( KeyCode.LeftArrow ) || ( Input.GetKey( KeyCode.LeftArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
+            transform.SetPositionAnchorLocal( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }
         if (Input.GetKeyDown( KeyCode.RightArrow ) || ( Input.GetKey( KeyCode.RightArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
+            transform.SetPositionAnchorLocal( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
         }
         if (Input.GetKeyDown( KeyCode.UpArrow ) || ( Input.GetKey( KeyCode.UpArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin + transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
+            transform.SetPositionAnchorLocal( transform.anchorMin + transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
         }
         if (Input.GetKeyDown( KeyCode.DownArrow ) || ( Input.GetKey( KeyCode.DownArrow ) && leftControl ))
         {
-            transform.SetPositionAnchor( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
+            transform.SetPositionAnchorLocal( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
         }
     }
 
@@ -66,6 +65,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
     private void OnPointerDown( Vector2 interactPivot )
     {
+        if (!isWindow)
+        {
+            InspectorView.SelectedItem = CUIObject.Lookup[transform.gameObject];
+        }
         mDelta = transform.anchorMin + transform.GetSizeLocal() * 0.5f - transform.GetMouseLocal();
         mInteractPoint = interactPivot;
         mAnchorPos = transform.GetPivotLocalPosition( mAnchor );
@@ -73,7 +76,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
     private void OnMove()
     {
-        transform.SetPositionAnchor( transform.GetMouseLocal() + mDelta - transform.GetSizeLocal() * 0.5f, isWindow );
+        transform.SetPositionAnchorLocal( transform.GetMouseLocal() + mDelta - transform.GetSizeLocal() * 0.5f, isWindow );
 
         TransformEditorUpdate();
     }
@@ -89,7 +92,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
         transform.SetRect( transform.anchorMin, transform.anchorMin + size );
         var posDelta = mAnchorPos - transform.GetPivotLocalPosition( mAnchor );
-        transform.SetPositionAnchor( transform.anchorMin + posDelta );
+        transform.SetPositionAnchorLocal( transform.anchorMin + posDelta );
         TransformEditorUpdate();
     }
 
@@ -177,7 +180,6 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     public void OnSelected()
     {
         BuildTriggers();
-        Selected = transform;
     }
 
     public void OnUnselected()

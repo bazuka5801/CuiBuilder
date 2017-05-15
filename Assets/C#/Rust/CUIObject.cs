@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 using Oxide.Game.Rust.Cui;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 [JsonObject(MemberSerialization.OptIn)]
 public class CUIObject : MonoBehaviour, IPoolHandler {
@@ -47,6 +50,24 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
         FadeOut = 0f;
         Components.RemoveAll(p => p.GetType() != typeof(CuiRectTransformComponent));
         Lookup.Remove(gameObject);
+    }
+
+    public void OnComponentStateChanged<CT, CCT>( ComponentEditor<CT, CCT> component, bool state)
+        where CCT : ICuiComponent
+        where CT : BaseComponent<CCT>
+    {
+        if (state)
+        {
+            if (Components.Any(c => c is CCT)) return;
+            Components.Add( (CCT) Activator.CreateInstance( typeof( CCT ) ) );
+            gameObject.AddComponent<CT>();
+        }
+        else
+        {
+            if (Components.All( c => !(c is CCT ))) return;
+            Components.Remove(GetCuiComponent<CCT>());
+            DestroyImmediate(GetComponent<CT>());
+        }
     }
 
     public void OnPoolLeave()

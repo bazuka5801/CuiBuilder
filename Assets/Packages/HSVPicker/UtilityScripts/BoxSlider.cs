@@ -134,10 +134,6 @@ namespace UnityEngine.UI
 				m_MaxValue = Mathf.Round(m_MaxValue);
 			}
 			UpdateCachedReferences();
-			Set(m_Value, false);
-			SetY(m_ValueY, false);
-			// Update rects since other things might affect them even if value didn't change.
-			UpdateVisuals();
 			
 			var prefabType = UnityEditor.PrefabUtility.GetPrefabType(this);
 			if (prefabType != UnityEditor.PrefabType.Prefab && !Application.isPlaying)

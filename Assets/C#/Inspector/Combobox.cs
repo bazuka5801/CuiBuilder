@@ -6,36 +6,23 @@ using System.Linq;
 using UnityEngine.Events;
 
 public class Combobox : InspectorField {
-    [Serializable]
-    public class OnComboboxChangedEvent : UnityEvent<object>
-    { }
 
-    [SerializeField] private Dropdown m_Dropdown;
-    public OnComboboxChangedEvent OnValueChanged;
+    [SerializeField]
+    public Dropdown m_Dropdown;
+    [SerializeField]
+    public string m_EnumTypeFullName;
 
     private Type m_EnumType;
-
     private void Awake()
     {
         m_Dropdown.onValueChanged.AddListener(SendEventCallback);
+        m_Dropdown.AddOptions( Enum.GetNames( m_EnumType = Type.GetType(m_EnumTypeFullName) ).ToList() );
     }
 
     private void SendEventCallback(int index)
     {
-        if (OnValueChanged == null) return;
         var selectedItem = m_Dropdown.options[index].text;
-        OnValueChanged.Invoke(m_EnumType != null ? Enum.Parse(m_EnumType, selectedItem) : selectedItem);
-    }
-
-    public void Init(Type enumType)
-    {
-        m_EnumType = enumType;
-        m_Dropdown.AddOptions(Enum.GetNames(enumType).ToList());
-    }
-
-    public void Init(List<string> options)
-    {
-        m_Dropdown.AddOptions(options);
+        onChanged.Invoke(m_EnumType != null ? Enum.Parse(m_EnumType, selectedItem) : selectedItem);
     }
 
     public override object GetValue()

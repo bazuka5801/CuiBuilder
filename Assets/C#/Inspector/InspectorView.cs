@@ -13,7 +13,10 @@ public class InspectorView : MonoBehaviour {
 
     private IEnumerable<ComponentEditor> m_Components;
     private IEnumerable<ComponentEditor> m_ActiveComponents { get { return m_Components.Where(p => p.IsActive()); } }
-    public static CUIObject Selected;
+    public static List<CUIObject> SelectedItems;
+
+    public static CUIObject SelectedItem = default(CUIObject);
+
     private void Awake()
     {
         m_scrollRect = GetComponent<ScrollRect>();
@@ -30,14 +33,11 @@ public class InspectorView : MonoBehaviour {
 
     private void OnSelectionChanged(object sender, SelectionChangedArgs e)
     {
-        var newItems = e.NewItems.Select(o => ((GameObject) o).GetComponent<CUIObject>()).ToList();
-        if (newItems.Count > 0)
-        {
-            Selected = newItems.Last();
-        }
+        SelectedItems = e.NewItems.Select(o => ((GameObject) o).GetComponent<CUIObject>()).Where(p=>p != null).ToList();
+        SelectedItem = SelectedItems.Count > 0 ? SelectedItems.Last() : default(CUIObject);
         foreach (var component in m_Components)
         {
-            component.OnItemsSelected(newItems);
+            component.OnItemsSelected( SelectedItems );
         }
         if (e.NewItems == null || e.NewItems.Length == 0)
         {

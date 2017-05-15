@@ -18,12 +18,12 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         if (type == typeof(Vector2))
         {
             var vec = (Vector2) value;
-            m_Transform.SetPositionAnchor(vec);
+            m_Transform.SetPositionAnchorLocal(vec);
             CuiComponent.AnchorMin = string.Format("{0} {1}", vec.x, vec.y);
         }
         else
         {
-            m_Transform.SetPositionAnchor(new Vector2(0.1f, 0.1f));
+            m_Transform.SetPositionAnchorLocal(new Vector2(0.1f, 0.1f));
             CuiComponent.AnchorMin = value.ToString();
         }
     }

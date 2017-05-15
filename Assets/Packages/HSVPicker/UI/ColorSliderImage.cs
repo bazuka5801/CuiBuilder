@@ -100,6 +100,7 @@ public class ColorSliderImage : MonoBehaviour
 
     private void RegenerateTexture()
     {
+        if (type == ColorValues.A)return;
         Color32 baseColor = picker != null ? picker.CurrentColor : Color.black;
 
         float h = picker != null ? picker.H : 0;

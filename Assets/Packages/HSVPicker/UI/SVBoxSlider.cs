@@ -56,7 +56,7 @@ public class SVBoxSlider : MonoBehaviour
     private void OnValidate()
     {
         image = GetComponent<RawImage>();
-        RegenerateSVTexture();
+        //RegenerateSVTexture();
     }
 #endif
 

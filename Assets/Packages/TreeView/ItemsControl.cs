@@ -28,7 +28,7 @@ namespace Battlehub.UIControls
         }
 
         /// <summary>
-        /// Selected Items
+        /// SelectedItem Items
         /// </summary>
         public object[] NewItems
         {
@@ -56,7 +56,7 @@ namespace Battlehub.UIControls
         }
 
         /// <summary>
-        /// First Selected Item
+        /// First SelectedItem Item
         /// </summary>
         public object NewItem
         {
@@ -606,7 +606,7 @@ namespace Battlehub.UIControls
         }
 
         /// <summary>
-        /// Selected Items Count
+        /// SelectedItem Items Count
         /// </summary>
         public int SelectedItemsCount
         {
@@ -637,7 +637,7 @@ namespace Battlehub.UIControls
         }
 
         /// <summary>
-        /// Selected DataItems
+        /// SelectedItem DataItems
         /// </summary>
         public virtual IEnumerable SelectedItems
         {

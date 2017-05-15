@@ -1,11 +1,18 @@
-﻿using Oxide.Game.Rust.Cui;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 
 public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRectTransformComponent>
 {
     public RectTransform m_SelectedTransform
     {
-        get { return (RectTransform) InspectorView.Selected.transform; }
+        get { return (RectTransform) InspectorView.SelectedItem.transform; }
+    }
+
+    private static IEnumerable<RectTransform> m_SelectedTransforms
+    {
+        get { return InspectorView.SelectedItems.Select(p => (RectTransform) p.transform); }
     }
 
     [InspectorField( "anchormin" )]
@@ -32,37 +39,83 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         OnPixelChanged();
     }
 
-    public void SendAnchorMinUpdate( Vector2 anchor )
+    public void SendAnchorMinUpdate(Vector2 anchor)
     {
-        GetField( "anchormin" ).SetValue( anchor );
+        GetField("anchormin").SetValue(anchor);
+
+        Dictionary<GameObject, Vector2> offsets = new Dictionary<GameObject, Vector2>();
+
+        var selected = m_SelectedTransforms.Where(p => p != m_SelectedTransform).ToList();
+
+        var rootComponent = GetTransformComponent(m_SelectedTransform.gameObject);
+        var centerPoint = m_SelectedTransform.GetPivotPositionWorld(Vector2Ex.Parse( rootComponent.AnchorMin));
+        foreach (var rTransform in selected)
+        {
+            var anchorMin = Vector2Ex.Parse(GetTransformComponent(rTransform.gameObject).AnchorMin);
+            offsets[rTransform.gameObject] = rTransform.GetPivotPositionWorld( anchorMin ) - centerPoint;
+        }
+
         base.OnFieldChanged("anchormin", anchor);
+
+        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin));
+
+        foreach (var rTransform in selected)
+        {
+            var anchorMin =  centerPoint + offsets[rTransform.gameObject];
+            GetTransformComponent(rTransform.gameObject).AnchorMin = Vector2Ex.ToString(anchorMin);
+            rTransform.SetPositionAnchorWorld(anchorMin);
+        }
+    }
+
+    private static CuiRectTransformComponent GetTransformComponent(GameObject obj)
+    {
+        return CUIObject.Lookup[obj].GetCuiComponent<CuiRectTransformComponent>();
     }
 
     public void SendAnchorMaxUpdate( Vector2 anchor )
     {
         GetField( "anchormax" ).SetValue( anchor );
+
+        Dictionary<GameObject, Vector2> offsets = new Dictionary<GameObject, Vector2>();
+
+        var selected = m_SelectedTransforms.Where( p => p != m_SelectedTransform ).ToList();
+
+        var rootComponent = GetTransformComponent( m_SelectedTransform.gameObject );
+        var centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMax ) );
+        foreach (var rTransform in selected)
+        {
+            var anchorMax = Vector2Ex.Parse( GetTransformComponent( rTransform.gameObject ).AnchorMax );
+            offsets[ rTransform.gameObject ] = rTransform.GetPivotPositionWorld( anchorMax ) - centerPoint;
+        }
+
         base.OnFieldChanged( "anchormax", anchor );
+
+        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMax ) );
+
+        foreach (var rTransform in selected)
+        {
+            var point = centerPoint + offsets[rTransform.gameObject];
+            var anchorMax = point ;
+            GetTransformComponent(rTransform.gameObject).AnchorMax = Vector2Ex.ToString(anchorMax);
+            rTransform.SetRectWorld( rTransform.anchorMin, anchorMax );
+        }
     }
 
     void OnAnchorChanged()
     {
-        var rTransform = ((RectTransform) InspectorView.Selected.transform);
         Vector2? anchorMin = GetField( "anchormin" ).GetValue() as Vector2?;
         if (anchorMin == null) return;
-        var pixelLocalPosition = rTransform.GetPositionPixelLocal();
+        var pixelLocalPosition = m_SelectedTransform.GetPositionPixelLocal();
         GetField( "position" ).SetValue( pixelLocalPosition );
 
         Vector2? anchorMax = GetField( "anchormax" ).GetValue() as Vector2?;
         if (anchorMax == null) return;
-        var localSize = rTransform.GetSizePixelLocal();
+        var localSize = m_SelectedTransform.GetSizePixelLocal();
         GetField( "size" ).SetValue( localSize );
-
     }
 
     void OnPixelChanged()
     {
-        var pos = GetField( "position" ).GetValue() as Vector2?;
-        var size = GetField( "size" ).GetValue() as Vector2?;
         GetField( "anchormin" ).SetValue( m_SelectedTransform.anchorMin );
         GetField( "anchormax" ).SetValue( m_SelectedTransform.anchorMax );
     }

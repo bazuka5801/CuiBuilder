@@ -15,16 +15,8 @@ public abstract class InspectorField : MonoBehaviour
     [SerializeField]
     protected OnInspectorFieldChangedEvent onChanged;
 
-    public virtual void Init(object value)
-    { }
-
     public virtual void AddListener(UnityAction<object> callback)
     {
         this.onChanged.AddListener(callback);
-    }
-
-    public void SetLabel(string text)
-    {
-        GetComponentInChildren<Text>().text = text;
     }
 }

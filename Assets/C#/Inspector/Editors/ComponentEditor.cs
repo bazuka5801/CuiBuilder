@@ -22,10 +22,10 @@ public abstract class ComponentEditor : MonoBehaviour
     private Dictionary<string, InspectorField> m_Fields = new Dictionary<string, InspectorField>();
 
     private bool m_Active;
-    [SerializeField] private bool m_Fixed;
+    [SerializeField] protected bool m_Fixed;
 
     private Dictionary<string, MethodInfo> m_Hooks = new Dictionary<string, MethodInfo>();
-        
+    private Toggle m_StateToggle;
     protected InspectorField GetField(string fieldName)
     {
         return m_Fields[fieldName];
@@ -40,25 +40,49 @@ public abstract class ComponentEditor : MonoBehaviour
     {
         if (!m_Fixed)
         {
-            GetComponentInChildren<Toggle>().onValueChanged.AddListener(SetState);
+            m_StateToggle = GetComponentInChildren<Toggle>();
+        }
+        else
+        {
+            m_Active = true;
         }
         InitializeHooks();
         AddChangedHandlers();
     }
-    
+
+    private void SetToggleState(bool state)
+    {
+        m_StateToggle.onValueChanged.RemoveAllListeners();
+        m_StateToggle.isOn = state;
+        SubscriveStateToggleEvent();
+    }
+
+    private void SubscriveStateToggleEvent()
+    {
+        m_StateToggle.onValueChanged.AddListener( SetState );
+    }
 
     protected void SetState(bool state)
     {
+        if (m_Fixed) return;
         m_Active = state;
+
+        SetToggleState(state);
         foreach (Transform field in base.transform)
         {
             if (field.tag != "Header")
             {
-                field.gameObject.SetActive( state );
+                field.gameObject.SetActive(state);
             }
+        }
+        if (InspectorView.SelectedItems.Count <= 1 || Input.GetKey(KeyCode.LeftControl) &&
+            Input.GetKey(KeyCode.LeftShift))
+        {
+            OnStateChanged(state);
         }
     }
 
+    protected abstract void OnStateChanged(bool state);
 
     protected virtual void InitializeHooks()
     {
@@ -77,6 +101,7 @@ public abstract class ComponentEditor : MonoBehaviour
             }
         }
     }
+    
 
     public abstract void OnItemsSelected( List<CUIObject> newItems);
 
@@ -130,6 +155,19 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
         m_ComponentHooks = GetInspectorFieldHandlers<CT>();
     }
 
+    protected override void OnStateChanged(bool state)
+    {
+        foreach (var selected in InspectorView.SelectedItems)
+        {
+            selected.OnComponentStateChanged( this, state );
+        }
+
+        if (state)
+        {
+            Load( InspectorView.SelectedItem.GetCuiComponent<CCT>() );
+        }
+    }
+
     protected override void OnFieldChanged(string field, object value)
     {
         MethodInfo method;
@@ -151,12 +189,13 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
 
     public override void OnItemsSelected(List<CUIObject> newItems)
     {
-        if (newItems.Count == 0 || newItems.Any(cuiObject => cuiObject.GetCuiComponent<CCT>() == null))
+        if (newItems == null || newItems.Count == 0 ||
+            newItems.Any(cuiObject => cuiObject.GetCuiComponent<CCT>() == null))
         {
             SetState(false);
             return;
         }
-        SetState( true );
+        SetState(true);
         Load(newItems.Last().GetCuiComponent<CCT>());
     }
 
