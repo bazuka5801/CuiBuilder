@@ -157,6 +157,14 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
 
     protected override void OnStateChanged(bool state)
     {
+        if (state)
+        {
+            if (InspectorView.SelectedItems.Any( p => !p.CanBeAdd<CT, CCT>() ))
+            {
+                SetState( false );
+                return;
+            }
+        }
         foreach (var selected in InspectorView.SelectedItems)
         {
             selected.OnComponentStateChanged( this, state );

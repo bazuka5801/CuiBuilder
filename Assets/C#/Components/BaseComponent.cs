@@ -1,5 +1,6 @@
 ﻿using Oxide.Game.Rust.Cui;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class BaseComponent : MonoBehaviour
 {
@@ -8,6 +9,11 @@ public abstract class BaseComponent : MonoBehaviour
     protected virtual void Awake()
     {
         cuiObject = GetComponent<CUIObject>();
+    }
+
+    protected virtual bool CanBeAdd()
+    {
+        return true;
     }
 }
 
@@ -18,4 +24,14 @@ public class BaseComponent<T> : BaseComponent
     {
         get { return cuiObject.GetCuiComponent<T>(); }
     }
+}
+
+public class GraphicComponent<T> : BaseComponent<T>
+    where T : ICuiComponent
+{
+}
+
+public class SelectableComponent<T> : BaseComponent<T>
+    where T : ICuiComponent
+{
 }

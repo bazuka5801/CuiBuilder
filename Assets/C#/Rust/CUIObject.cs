@@ -70,6 +70,21 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
         }
     }
 
+    public bool CanBeAdd<CT, CCT>()
+        where CT : BaseComponent
+        where CCT : ICuiComponent
+    {
+        if (typeof( CT ).IsSubclassOf( typeof( GraphicComponent<CCT> ) ))
+        {
+            if (GetComponent<Graphic>()) return false;
+        }
+        if (typeof( CT ).IsSubclassOf( typeof( SelectableComponent<CCT> ) ))
+        {
+            if (GetComponent<Selectable>()) return false;
+        }
+        return true;
+    }
+
     public void OnPoolLeave()
     {
         Lookup[gameObject] = this;

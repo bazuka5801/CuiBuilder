@@ -4,7 +4,7 @@ using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class ImageComponent : BaseComponent<CuiRawImageComponent>
+public sealed class ImageComponent : GraphicComponent<CuiRawImageComponent>
 {
     private RawImage m_Image;
 

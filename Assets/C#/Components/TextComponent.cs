@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class TextComponent : BaseComponent<CuiTextComponent>
+public sealed class TextComponent : GraphicComponent<CuiTextComponent>
 {
     private Text m_Text;
 
