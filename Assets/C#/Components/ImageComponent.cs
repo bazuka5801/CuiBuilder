@@ -4,7 +4,7 @@ using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class ImageComponent : GraphicComponent<CuiRawImageComponent>
+public sealed class ImageComponent : BaseComponent<CuiRawImageComponent>, IGraphicComponent
 {
     private RawImage m_Image;
 
@@ -15,7 +15,7 @@ public sealed class ImageComponent : GraphicComponent<CuiRawImageComponent>
         
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         DestroyImmediate(m_Image);
     }

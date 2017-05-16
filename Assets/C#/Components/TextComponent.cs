@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class TextComponent : GraphicComponent<CuiTextComponent>
+public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicComponent
 {
     private Text m_Text;
 
@@ -17,7 +17,7 @@ public sealed class TextComponent : GraphicComponent<CuiTextComponent>
         m_Text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
     }
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         DestroyImmediate( m_Text );
     }

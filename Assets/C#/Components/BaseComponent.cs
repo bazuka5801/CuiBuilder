@@ -26,12 +26,5 @@ public class BaseComponent<T> : BaseComponent
     }
 }
 
-public class GraphicComponent<T> : BaseComponent<T>
-    where T : ICuiComponent
-{
-}
-
-public class SelectableComponent<T> : BaseComponent<T>
-    where T : ICuiComponent
-{
-}
+public interface IGraphicComponent { }
+public interface ISelectableComponent { }
