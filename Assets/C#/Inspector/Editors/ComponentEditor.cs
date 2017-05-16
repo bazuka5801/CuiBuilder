@@ -75,6 +75,22 @@ public abstract class ComponentEditor : MonoBehaviour
                 field.gameObject.SetActive(state);
             }
         }
+        if (state)
+        {
+                LayoutRebuilder.ForceRebuildLayoutImmediate( GameObject.Find("Canvas").GetComponent<RectTransform>() );
+            Canvas.ForceUpdateCanvases();
+            foreach (var canvasGroup in GetComponentsInChildren<CanvasGroup>(true))
+            {
+                /*Debug.Log( canvasGroup .name);
+                var obj = canvasGroup.gameObject;
+                Destroy( obj .GetComponent<GraphicRaycaster>());
+                Destroy( obj .GetComponent<CanvasGroup>());
+                Destroy( obj .GetComponent<Canvas>());
+                obj.AddComponent<Canvas>();
+                obj.AddComponent<GraphicRaycaster>();
+                 obj.AddComponent<CanvasGroup>() ;*/
+            }
+        }
         if (InspectorView.SelectedItems.Count <= 1 || Input.GetKey(KeyCode.LeftControl) &&
             Input.GetKey(KeyCode.LeftShift))
         {

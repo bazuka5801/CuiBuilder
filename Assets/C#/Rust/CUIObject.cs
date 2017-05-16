@@ -74,11 +74,11 @@ public class CUIObject : MonoBehaviour, IPoolHandler {
         where CT : BaseComponent
         where CCT : ICuiComponent
     {
-        if (typeof( CT ).IsSubclassOf(typeof(IGraphicComponent)))
+        if (typeof( IGraphicComponent ).IsAssignableFrom(typeof( CT )))
         {
             if (GetComponent<Graphic>()) return false;
         }
-        if (typeof(CT).IsSubclassOf(typeof(ISelectableComponent)))
+        if (typeof( ISelectableComponent ).IsAssignableFrom(typeof(CT)))
         {
             if (GetComponent<Selectable>()) return false;
         }
