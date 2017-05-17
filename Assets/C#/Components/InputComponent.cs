@@ -1,4 +1,5 @@
-﻿using Oxide.Game.Rust.Cui;
+﻿using System;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -69,5 +70,11 @@ public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicCom
     private void OnCommandChanged( object value )
     {
         CuiComponent.Command = value.ToString();
+    }
+
+    [InspectorField( "password" )]
+    private void OnPasswordChanged( object value )
+    {
+        CuiComponent.IsPassword = Convert.ToBoolean( value );
     }
 }

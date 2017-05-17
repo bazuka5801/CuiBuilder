@@ -10,5 +10,6 @@ public class InputEditor : ComponentEditor<InputComponent, CuiInputFieldComponen
         GetField( "color" ).SetValue( component.Color );
         GetField( "charlimit" ).SetValue( component.CharsLimit );
         GetField( "command" ).SetValue( component.Command );
+        GetField( "password" ).SetValue( component.IsPassword );
     }
 }
