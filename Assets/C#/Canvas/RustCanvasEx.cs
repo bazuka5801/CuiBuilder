@@ -20,7 +20,7 @@ public static class RustCanvasEx
         child.AddComponent<RectTransform>();
         return child;
     }
-    
+
     public static void SetRect( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
         bool borderCollision = false )
     {
@@ -44,9 +44,9 @@ public static class RustCanvasEx
     public static void SetRectWorld( this RectTransform transform, Vector2 anchorMin, Vector2 anchorMax,
         bool borderCollision = false )
     {
-        anchorMin = transform.GetParent().GetLocalPoint(anchorMin);
+        anchorMin = transform.GetParent().GetLocalPoint( anchorMin );
         anchorMax = transform.GetParent().GetLocalPoint( anchorMax );
-        SetRect(transform, anchorMin, anchorMax, borderCollision);
+        SetRect( transform, anchorMin, anchorMax, borderCollision );
     }
 
     #region Position
@@ -59,10 +59,10 @@ public static class RustCanvasEx
     }
     public static void SetPositionAnchorWorld( this RectTransform transform, Vector2 anchorMin, bool borderCollision = false )
     {
-        SetRect( transform, transform.GetParent().GetLocalPoint(anchorMin), transform.GetParent().GetLocalPoint( transform.GetSizeLocal() + anchorMin ), borderCollision );
+        SetRect( transform, transform.GetParent().GetLocalPoint( anchorMin ), transform.GetParent().GetLocalPoint( transform.GetSizeLocal() + anchorMin ), borderCollision );
     }
 
-    public static Vector2 GetPositionAnchorWorld(this RectTransform transform)
+    public static Vector2 GetPositionAnchorWorld( this RectTransform transform )
     {
         return transform.GetParent().GetWorldPoint( transform.anchorMin );
     }

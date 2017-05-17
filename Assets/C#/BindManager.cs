@@ -4,7 +4,8 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BindManager : MonoBehaviour {
+public class BindManager : MonoBehaviour
+{
     [Serializable]
     public class OnBindExecuteEvent : UnityEvent { }
     [Serializable]
@@ -20,7 +21,7 @@ public class BindManager : MonoBehaviour {
     {
         foreach (var obj in m_Binds)
         {
-            if (obj.keys.All(p => p == obj.keys.Last() ? Input.GetKeyDown(p) : Input.GetKey(p)))
+            if (obj.keys.All( p => p == obj.keys.Last() ? Input.GetKeyDown( p ) : Input.GetKey( p ) ))
             {
                 if (obj.action != null)
                 {

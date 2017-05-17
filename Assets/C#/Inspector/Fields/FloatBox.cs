@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class FloatBox : InspectorField {
-    
+public class FloatBox : InspectorField
+{
+
 
     [SerializeField] private InputField m_InputField;
 
@@ -14,14 +15,14 @@ public class FloatBox : InspectorField {
     public override object GetValue()
     {
         float num;
-        if (float.TryParse(m_InputField.text, out num))
+        if (float.TryParse( m_InputField.text, out num ))
         {
             return num;
         }
         return m_InputField.text;
     }
 
-    public override void SetValue(object value)
+    public override void SetValue( object value )
     {
         DisableEvents();
         m_InputField.text = value.ToString();
@@ -35,6 +36,6 @@ public class FloatBox : InspectorField {
 
     public void EnableEvents()
     {
-        m_InputField.onEndEdit.AddListener(s=> { onChanged.Invoke(float.Parse(s)); });
+        m_InputField.onEndEdit.AddListener( s => { onChanged.Invoke( float.Parse( s ) ); } );
     }
 }

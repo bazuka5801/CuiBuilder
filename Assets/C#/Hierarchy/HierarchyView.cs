@@ -24,11 +24,11 @@ public class HierarchyView : MonoBehaviour
 
 
 
-    public static bool IsPrefab(Transform This)
+    public static bool IsPrefab( Transform This )
     {
         if (Application.isEditor && !Application.isPlaying)
         {
-            throw new InvalidOperationException("Does not work in edit mode");
+            throw new InvalidOperationException( "Does not work in edit mode" );
         }
         return This.gameObject.scene.buildIndex < 0;
     }
@@ -42,7 +42,7 @@ public class HierarchyView : MonoBehaviour
     {
         if (!TreeView)
         {
-            Debug.LogError("Set TreeView field");
+            Debug.LogError( "Set TreeView field" );
             return;
         }
         IEnumerable<GameObject> dataItems = Root;
@@ -58,32 +58,34 @@ public class HierarchyView : MonoBehaviour
         TreeView.ItemBeginDrop += OnItemBeginDrop;
         TreeView.ItemEndDrag += OnItemEndDrag;
 
-        TreeView.CanItemRemove = (item) => !Root.Contains((GameObject)item);
+        TreeView.CanItemRemove = ( item ) => !Root.Contains( (GameObject) item );
 
         //Bind data items
         TreeView.Items = dataItems;
     }
 
-    public static bool Select(GameObject obj)
+    public static bool Select( GameObject obj )
     {
         var newSelected = new List<object>();
-        if (m_Instance.TreeView.IsItemSelected(obj)) {
-            newSelected.AddRange(m_Instance.TreeView.SelectedItems.Cast<object>().ToList());
-            newSelected.Remove(obj);
+        if (m_Instance.TreeView.IsItemSelected( obj ))
+        {
+            newSelected.AddRange( m_Instance.TreeView.SelectedItems.Cast<object>().ToList() );
+            newSelected.Remove( obj );
             m_Instance.TreeView.SelectedItems = newSelected;
             return false;
         }
-        if (Input.GetKey(m_Instance.TreeView.MultiselectKey) && m_Instance.TreeView.SelectedItems != null)
-            newSelected.AddRange(m_Instance.TreeView.SelectedItems.Cast<object>().ToList());
-        newSelected.Add(obj);
+        if (Input.GetKey( m_Instance.TreeView.MultiselectKey ) && m_Instance.TreeView.SelectedItems != null)
+            newSelected.AddRange( m_Instance.TreeView.SelectedItems.Cast<object>().ToList() );
+        newSelected.Add( obj );
         m_Instance.TreeView.SelectedItems = newSelected;
         return true;
     }
 
-    private void OnItemBeginDrop(object sender, ItemDropCancelArgs e)
+    private void OnItemBeginDrop( object sender, ItemDropCancelArgs e )
     {
-        GameObject dropTarget = (GameObject)e.DropTarget;
-        if (Root.Contains(dropTarget) && (e.Action == ItemDropAction.SetNextSibling || e.Action == ItemDropAction.SetPrevSibling)) {
+        GameObject dropTarget = (GameObject) e.DropTarget;
+        if (Root.Contains( dropTarget ) && ( e.Action == ItemDropAction.SetNextSibling || e.Action == ItemDropAction.SetPrevSibling ))
+        {
             e.Cancel = true;
         }
 
@@ -109,18 +111,18 @@ public class HierarchyView : MonoBehaviour
 
         TreeView.CanItemRemove = null;
     }
-    
-    private void OnItemExpanding(object sender, ItemExpandingArgs e)
+
+    private void OnItemExpanding( object sender, ItemExpandingArgs e )
     {
         //get parent data item (game object in our case)
-        GameObject gameObject = (GameObject)e.Item;
+        GameObject gameObject = (GameObject) e.Item;
         if (gameObject.transform.childCount > 0)
         {
             //get children
             List<GameObject> children = new List<GameObject>();
             foreach (Transform child in gameObject.transform)
                 if (child.tag == "CUI")
-                    children.Add(child.gameObject);
+                    children.Add( child.gameObject );
             //Populate children collection
             e.Children = children;
         }
@@ -132,68 +134,68 @@ public class HierarchyView : MonoBehaviour
         else return m_Instance.TreeView.SelectedItems.OfType<GameObject>();
     }
 
-    public static void ChangeName(GameObject item, string name)
+    public static void ChangeName( GameObject item, string name )
     {
         item.name = name;
-        var tvi = m_Instance.TreeView.GetItemContainer(item);
+        var tvi = m_Instance.TreeView.GetItemContainer( item );
         if (tvi != null)
         {
             tvi.GetComponentInChildren<Text>().text = name;
         }
     }
 
-    public static void AddSelectionListener(EventHandler<SelectionChangedArgs> callback)
+    public static void AddSelectionListener( EventHandler<SelectionChangedArgs> callback )
     {
         m_Instance.TreeView.SelectionChanged += callback;
     }
-    
 
-    private void OnSelectionChanged(object sender, SelectionChangedArgs e)
+
+    private void OnSelectionChanged( object sender, SelectionChangedArgs e )
     {
 #if UNITY_EDITOR
         //Do something on selection changed (just syncronized with editor's hierarchy for demo purposes)
         UnityEditor.Selection.objects = e.NewItems.OfType<GameObject>().ToArray();
 #endif
-        if (e.NewItems.Any(p=>Root.Contains((GameObject)p)))
+        if (e.NewItems.Any( p => Root.Contains( (GameObject) p ) ))
         {
-            TreeView.SelectedItems = e.NewItems.Where(p => !Root.Contains((GameObject)p));
+            TreeView.SelectedItems = e.NewItems.Where( p => !Root.Contains( (GameObject) p ) );
             return;
         }
-        foreach(var oldItem in e.OldItems.Cast<GameObject>())
+        foreach (var oldItem in e.OldItems.Cast<GameObject>())
         {
-            SendSelectEvent(oldItem, (i) => i.OnUnselected());
+            SendSelectEvent( oldItem, ( i ) => i.OnUnselected() );
         }
         foreach (var newItem in e.NewItems.Cast<GameObject>())
         {
-            SendSelectEvent(newItem, (i) => i.OnSelected());
+            SendSelectEvent( newItem, ( i ) => i.OnSelected() );
         }
     }
 
-    public void SendSelectEvent(GameObject obj, Action<ISelectHandler> callback)
+    public void SendSelectEvent( GameObject obj, Action<ISelectHandler> callback )
     {
-        foreach(var selectHandler in obj.GetComponents(typeof(ISelectHandler)).OfType<ISelectHandler>())
+        foreach (var selectHandler in obj.GetComponents( typeof( ISelectHandler ) ).OfType<ISelectHandler>())
         {
-            callback.Invoke(selectHandler);
-        }       
+            callback.Invoke( selectHandler );
+        }
     }
 
-    private void OnItemsRemoved(object sender, ItemsRemovedArgs e)
+    private void OnItemsRemoved( object sender, ItemsRemovedArgs e )
     {
         //Destroy removed dataitems
         for (int i = 0; i < e.Items.Length; ++i)
         {
-            GameObject go = (GameObject)e.Items[i];
+            GameObject go = (GameObject) e.Items[ i ];
             if (go != null)
             {
-                PoolManager.Release(go);
+                PoolManager.Release( go );
             }
         }
     }
-    
 
-    public static void OnRename(GameObject item)
+
+    public static void OnRename( GameObject item )
     {
-        m_Instance.TreeView.GetItemContainer(item).GetComponentInChildren<Text>().text = item.name;
+        m_Instance.TreeView.GetItemContainer( item ).GetComponentInChildren<Text>().text = item.name;
     }
 
     /// <summary>
@@ -202,48 +204,48 @@ public class HierarchyView : MonoBehaviour
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void OnItemDataBinding(object sender, TreeViewItemDataBindingArgs e)
+    private void OnItemDataBinding( object sender, TreeViewItemDataBindingArgs e )
     {
         GameObject dataItem = e.Item as GameObject;
         if (dataItem != null)
         {
             //We display dataItem.name using UI.Text 
-            Text text = e.ItemPresenter.GetComponentInChildren<Text>(true);
+            Text text = e.ItemPresenter.GetComponentInChildren<Text>( true );
             text.text = dataItem.name;
 
             //Load icon from resources
-            Image icon = e.ItemPresenter.GetComponentsInChildren<Image>()[4];
-            icon.sprite = Resources.Load<Sprite>("cube");
+            Image icon = e.ItemPresenter.GetComponentsInChildren<Image>()[ 4 ];
+            icon.sprite = Resources.Load<Sprite>( "cube" );
 
             //And specify whether data item has children (to display expander arrow if needed)
             if (dataItem.name != "TreeView")
             {
-                e.CanDrag = e.CanEdit = !Root.Contains(dataItem);
-                e.HasChildren = Hierarchy.Lookup[dataItem].Children.Count > 0;
+                e.CanDrag = e.CanEdit = !Root.Contains( dataItem );
+                e.HasChildren = Hierarchy.Lookup[ dataItem ].Children.Count > 0;
             }
         }
     }
 
-    private void OnItemBeginDrag(object sender, ItemArgs e)
+    private void OnItemBeginDrag( object sender, ItemArgs e )
     {
         //Could be used to change cursor
     }
 
-    private void OnItemDrop(object sender, ItemDropArgs e)
+    private void OnItemDrop( object sender, ItemDropArgs e )
     {
         if (e.DropTarget == null)
         {
             return;
         }
 
-        Transform dropT = ((GameObject)e.DropTarget).transform;
+        Transform dropT = ( (GameObject) e.DropTarget ).transform;
         //Set drag items as children of drop target
         if (e.Action == ItemDropAction.SetLastChild)
         {
             for (int i = 0; i < e.DragItems.Length; ++i)
             {
-                Transform dragT = ((GameObject)e.DragItems[i]).transform;
-                Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.gameObject);
+                Transform dragT = ( (GameObject) e.DragItems[ i ] ).transform;
+                Hierarchy.Lookup[ dragT.gameObject ].SetParent( dropT.gameObject );
                 dragT.SetAsLastSibling();
             }
         }
@@ -253,23 +255,23 @@ public class HierarchyView : MonoBehaviour
         {
             for (int i = e.DragItems.Length - 1; i >= 0; --i)
             {
-                Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                Transform dragT = ( (GameObject) e.DragItems[ i ] ).transform;
                 int dropTIndex = dropT.GetSiblingIndex();
                 if (dragT.parent != dropT.parent)
                 {
-                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.parent.gameObject);
-                    dragT.SetSiblingIndex(dropTIndex + 1);
+                    Hierarchy.Lookup[ dragT.gameObject ].SetParent( dropT.parent.gameObject );
+                    dragT.SetSiblingIndex( dropTIndex + 1 );
                 }
                 else
                 {
                     int dragTIndex = dragT.GetSiblingIndex();
                     if (dropTIndex < dragTIndex)
                     {
-                        dragT.SetSiblingIndex(dropTIndex + 1);
+                        dragT.SetSiblingIndex( dropTIndex + 1 );
                     }
                     else
                     {
-                        dragT.SetSiblingIndex(dropTIndex);
+                        dragT.SetSiblingIndex( dropTIndex );
                     }
                 }
             }
@@ -280,34 +282,34 @@ public class HierarchyView : MonoBehaviour
         {
             for (int i = 0; i < e.DragItems.Length; ++i)
             {
-                Transform dragT = ((GameObject)e.DragItems[i]).transform;
+                Transform dragT = ( (GameObject) e.DragItems[ i ] ).transform;
                 if (dragT.parent != dropT.parent)
                 {
-                    Hierarchy.Lookup[dragT.gameObject].SetParent(dropT.parent.gameObject);
+                    Hierarchy.Lookup[ dragT.gameObject ].SetParent( dropT.parent.gameObject );
                 }
 
                 int dropTIndex = dropT.GetSiblingIndex();
                 int dragTIndex = dragT.GetSiblingIndex();
                 if (dropTIndex > dragTIndex)
                 {
-                    dragT.SetSiblingIndex(dropTIndex - 1);
+                    dragT.SetSiblingIndex( dropTIndex - 1 );
                 }
                 else
                 {
-                    dragT.SetSiblingIndex(dropTIndex);
+                    dragT.SetSiblingIndex( dropTIndex );
                 }
             }
         }
     }
 
-    private void OnItemEndDrag(object sender, ItemArgs e)
+    private void OnItemEndDrag( object sender, ItemArgs e )
     {
-        
-    }
-    
 
-    public static void AddChild(GameObject obj)
+    }
+
+
+    public static void AddChild( GameObject obj )
     {
-        m_Instance.TreeView.AddChild(m_Instance.Root[1], obj);
+        m_Instance.TreeView.AddChild( m_Instance.Root[ 1 ], obj );
     }
 }

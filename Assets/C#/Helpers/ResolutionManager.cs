@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ResolutionManager : MonoBehaviour {
-    
+public class ResolutionManager : MonoBehaviour
+{
+
     private static ResolutionManager m_Instance;
 
     public static int AspectIndex = 0;
@@ -27,7 +26,7 @@ public class ResolutionManager : MonoBehaviour {
         return "";
     }
 
-    private Vector2[] m_Resolutions = {new Vector2(1920f, 1080f), new Vector2(1728f, 1080f), new Vector2(1350f, 1080), new Vector2(1440f, 1080f)};
+    private Vector2[] m_Resolutions = { new Vector2( 1920f, 1080f ), new Vector2( 1728f, 1080f ), new Vector2( 1350f, 1080 ), new Vector2( 1440f, 1080f ) };
 
     /// <summary>
     /// Выставляет разрешение
@@ -36,8 +35,8 @@ public class ResolutionManager : MonoBehaviour {
     public void SetResolution( int index )
     {
         AspectIndex = index;
-        var size = m_Instance.m_Resolutions[ index];
-        Screen.SetResolution(Convert.ToInt32(size[0]), Convert.ToInt32(size[1]), Screen.fullScreen, Screen.currentResolution.refreshRate);
-        BackgroundManager.Instance.SetBackground(GetAspect());
+        var size = m_Instance.m_Resolutions[ index ];
+        Screen.SetResolution( Convert.ToInt32( size[ 0 ] ), Convert.ToInt32( size[ 1 ] ), Screen.fullScreen, Screen.currentResolution.refreshRate );
+        BackgroundManager.Instance.SetBackground( GetAspect() );
     }
 }

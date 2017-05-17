@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Oxide.Game.Rust.Cui;
+﻿using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 

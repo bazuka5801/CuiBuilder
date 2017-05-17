@@ -1,8 +1,4 @@
 ﻿using Oxide.Game.Rust.Cui;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,7 +10,7 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
     {
         base.Awake();
         m_Text = gameObject.AddComponent<Text>();
-        m_Text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+        m_Text.font = Resources.GetBuiltinResource<Font>( "Arial.ttf" );
     }
 
     private void OnDestroy()
@@ -22,8 +18,8 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
         DestroyImmediate( m_Text );
     }
 
-    [InspectorField("text")]
-    private void OnTextChanged(object value)
+    [InspectorField( "text" )]
+    private void OnTextChanged( object value )
     {
         var text = value.ToString();
         m_Text.text = text;
@@ -41,7 +37,7 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
     {
         var text = value.ToString();
         int fontSize;
-        if (!int.TryParse(text, out fontSize))
+        if (!int.TryParse( text, out fontSize ))
         {
             fontSize = 12;
         }

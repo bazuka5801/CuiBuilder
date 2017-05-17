@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -23,12 +22,15 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private Vector2 mAnchorPos;
     private Vector2 mDelta;
     private GameObject m_TriggerContainer;
-    private static RectTransformEditor m_TransformEditor { get
+    private static RectTransformEditor m_TransformEditor
+    {
+        get
         {
-            return ((RectTransformEditor) ComponentEditor<RectTransformComponent, CuiRectTransformComponent>
-                .Instance());
-        } }
-    
+            return ( (RectTransformEditor) ComponentEditor<RectTransformComponent, CuiRectTransformComponent>
+                .Instance() );
+        }
+    }
+
 
     private void Awake()
     {
@@ -67,7 +69,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     {
         if (!isWindow)
         {
-            InspectorView.SelectedItem = CUIObject.Lookup[transform.gameObject];
+            InspectorView.SelectedItem = CUIObject.Lookup[ transform.gameObject ];
         }
         mDelta = transform.anchorMin + transform.GetSizeLocal() * 0.5f - transform.GetMouseLocal();
         mInteractPoint = interactPivot;

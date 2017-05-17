@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Oxide.Game.Rust.Cui;
-using UnityEngine;
+﻿using Oxide.Game.Rust.Cui;
 using UnityEngine.UI;
 
 public class ButtonComponent : BaseComponent<CuiButtonComponent>, IGraphicComponent, ISelectableComponent

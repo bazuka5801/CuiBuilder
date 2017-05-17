@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Oxide.Game.Rust.Cui;
-using UnityEngine;
+﻿using Oxide.Game.Rust.Cui;
 
 public class InputEditor : ComponentEditor<InputComponent, CuiInputFieldComponent>
 {
-    public override void Load(CuiInputFieldComponent component)
+    public override void Load( CuiInputFieldComponent component )
     {
         GetField( "fontsize" ).SetValue( component.FontSize );
         GetField( "font" ).SetValue( component.FontSize );

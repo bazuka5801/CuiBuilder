@@ -12,7 +12,7 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
 
     private static IEnumerable<RectTransform> m_SelectedTransforms
     {
-        get { return InspectorView.SelectedItems.Select(p => (RectTransform) p.transform); }
+        get { return InspectorView.SelectedItems.Select( p => (RectTransform) p.transform ); }
     }
 
     [InspectorField( "anchormin" )]
@@ -39,37 +39,37 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         OnPixelChanged();
     }
 
-    public void SendAnchorMinUpdate(Vector2 anchor)
+    public void SendAnchorMinUpdate( Vector2 anchor )
     {
-        GetField("anchormin").SetValue(anchor);
+        GetField( "anchormin" ).SetValue( anchor );
 
         Dictionary<GameObject, Vector2> offsets = new Dictionary<GameObject, Vector2>();
 
-        var selected = m_SelectedTransforms.Where(p => p != m_SelectedTransform).ToList();
+        var selected = m_SelectedTransforms.Where( p => p != m_SelectedTransform ).ToList();
 
-        var rootComponent = GetTransformComponent(m_SelectedTransform.gameObject);
-        var centerPoint = m_SelectedTransform.GetPivotPositionWorld(Vector2Ex.Parse( rootComponent.AnchorMin));
+        var rootComponent = GetTransformComponent( m_SelectedTransform.gameObject );
+        var centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin ) );
         foreach (var rTransform in selected)
         {
-            var anchorMin = Vector2Ex.Parse(GetTransformComponent(rTransform.gameObject).AnchorMin);
-            offsets[rTransform.gameObject] = rTransform.GetPivotPositionWorld( anchorMin ) - centerPoint;
+            var anchorMin = Vector2Ex.Parse( GetTransformComponent( rTransform.gameObject ).AnchorMin );
+            offsets[ rTransform.gameObject ] = rTransform.GetPivotPositionWorld( anchorMin ) - centerPoint;
         }
 
-        base.OnFieldChanged("anchormin", anchor);
+        base.OnFieldChanged( "anchormin", anchor );
 
-        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin));
+        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin ) );
 
         foreach (var rTransform in selected)
         {
-            var anchorMin =  centerPoint + offsets[rTransform.gameObject];
-            GetTransformComponent(rTransform.gameObject).AnchorMin = Vector2Ex.ToString(anchorMin);
-            rTransform.SetPositionAnchorWorld(anchorMin);
+            var anchorMin = centerPoint + offsets[ rTransform.gameObject ];
+            GetTransformComponent( rTransform.gameObject ).AnchorMin = Vector2Ex.ToString( anchorMin );
+            rTransform.SetPositionAnchorWorld( anchorMin );
         }
     }
 
-    private static CuiRectTransformComponent GetTransformComponent(GameObject obj)
+    private static CuiRectTransformComponent GetTransformComponent( GameObject obj )
     {
-        return CUIObject.Lookup[obj].GetCuiComponent<CuiRectTransformComponent>();
+        return CUIObject.Lookup[ obj ].GetCuiComponent<CuiRectTransformComponent>();
     }
 
     public void SendAnchorMaxUpdate( Vector2 anchor )
@@ -94,9 +94,9 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
 
         foreach (var rTransform in selected)
         {
-            var point = centerPoint + offsets[rTransform.gameObject];
-            var anchorMax = point ;
-            GetTransformComponent(rTransform.gameObject).AnchorMax = Vector2Ex.ToString(anchorMax);
+            var point = centerPoint + offsets[ rTransform.gameObject ];
+            var anchorMax = point;
+            GetTransformComponent( rTransform.gameObject ).AnchorMax = Vector2Ex.ToString( anchorMax );
             rTransform.SetRectWorld( rTransform.anchorMin, anchorMax );
         }
     }
@@ -120,12 +120,12 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         GetField( "anchormax" ).SetValue( m_SelectedTransform.anchorMax );
     }
 
-    public override void Load(CuiRectTransformComponent component)
+    public override void Load( CuiRectTransformComponent component )
     {
-        GetField("anchormin").SetValue( component.AnchorMin );
-        GetField("anchormax").SetValue( component.AnchorMax );
-        GetField("offsetmin").SetValue(component.OffsetMin);
-        GetField("offsetmax").SetValue(component.OffsetMax);
+        GetField( "anchormin" ).SetValue( component.AnchorMin );
+        GetField( "anchormax" ).SetValue( component.AnchorMax );
+        GetField( "offsetmin" ).SetValue( component.OffsetMin );
+        GetField( "offsetmax" ).SetValue( component.OffsetMax );
         OnAnchorChanged();
     }
 }

@@ -3,25 +3,26 @@ using UnityEngine;
 
 namespace Inspector.UIControls
 {
-    public class VectorInput : InspectorField {
+    public class VectorInput : InspectorField
+    {
 
         [SerializeField] private FloatBox m_InputBoxX, m_InputBoxY;
 
         private void Awake()
         {
-            m_InputBoxX.AddListener(x => SendEventCallback());
-            m_InputBoxY.AddListener(y => SendEventCallback());
+            m_InputBoxX.AddListener( x => SendEventCallback() );
+            m_InputBoxY.AddListener( y => SendEventCallback() );
         }
 
-        public void Set(Vector2 vec)
+        public void Set( Vector2 vec )
         {
-            m_InputBoxX.SetValue(vec.x.ToString("F4"));
-            m_InputBoxY.SetValue(vec.y.ToString("F4"));
+            m_InputBoxX.SetValue( vec.x.ToString( "F4" ) );
+            m_InputBoxY.SetValue( vec.y.ToString( "F4" ) );
         }
 
         private void SendEventCallback()
         {
-            onChanged.Invoke(GetValue());
+            onChanged.Invoke( GetValue() );
         }
         private void DisableEvents()
         {
@@ -45,30 +46,30 @@ namespace Inspector.UIControls
 
             if (xFloat != null && yFloat != null)
             {
-                return new Vector2((float)xFloat, (float)yFloat);
+                return new Vector2( (float) xFloat, (float) yFloat );
             }
             return x + " " + y;
         }
 
-        public override void SetValue(object value)
+        public override void SetValue( object value )
         {
             DisableEvents();
             string strValue = value as string;
             Vector2 vec;
             if (strValue != null)
             {
-                vec = Vector2Ex.Parse(strValue);
+                vec = Vector2Ex.Parse( strValue );
             }
             else if (value is Vector2)
             {
-                vec = (Vector2)value;
+                vec = (Vector2) value;
             }
             else
             {
                 throw new InvalidCastException();
             }
-            m_InputBoxX.SetValue(vec.x);
-            m_InputBoxY.SetValue(vec.y);
+            m_InputBoxX.SetValue( vec.x );
+            m_InputBoxY.SetValue( vec.y );
             EnableEvents();
         }
     }

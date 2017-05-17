@@ -3,17 +3,18 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISelectHandler{
+public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISelectHandler
+{
 
     public static Dictionary<GameObject, Hierarchy> Lookup = new Dictionary<GameObject, Hierarchy>();
     public List<Hierarchy> Children = new List<Hierarchy>();
-    [SerializeField]private Hierarchy parent;
+    [SerializeField] private Hierarchy parent;
 
-    public static List<Hierarchy> Selection { get { return HierarchyView.GetSelectedItems().Select(o=>Lookup[o]).ToList(); } }
+    public static List<Hierarchy> Selection { get { return HierarchyView.GetSelectedItems().Select( o => Lookup[ o ] ).ToList(); } }
 
     private void Awake()
     {
-        Lookup[gameObject] = this;
+        Lookup[ gameObject ] = this;
     }
 
     private void Start()
@@ -27,9 +28,9 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISe
         {
             if (childT.tag == "CUI")
             {
-                var child = Lookup[childT.gameObject];
+                var child = Lookup[ childT.gameObject ];
                 child.parent = this;
-                Children.Add(child);
+                Children.Add( child );
             }
         }
     }
@@ -37,45 +38,45 @@ public class Hierarchy : MonoBehaviour, IPoolHandler,  IPointerClickHandler, ISe
 
     public void OnPoolEnter()
     {
-        Lookup.Remove(gameObject);
+        Lookup.Remove( gameObject );
         Children.Clear();
         parent = null;
     }
 
     public void OnPoolLeave()
     {
-        Lookup[gameObject] = this;
+        Lookup[ gameObject ] = this;
         Init();
     }
 
-    public void SetParent(Hierarchy newParent)
+    public void SetParent( Hierarchy newParent )
     {
-        var rTransform = (RectTransform)transform;
+        var rTransform = (RectTransform) transform;
         if (parent != null)
         {
-            parent.Children.Remove(this);
+            parent.Children.Remove( this );
 
-            var position = rTransform.GetParent().GetWorldPoint(rTransform.anchorMin);
+            var position = rTransform.GetParent().GetWorldPoint( rTransform.anchorMin );
             var size = rTransform.GetSizeWorld();
-            transform.SetParent(newParent.transform, false);
-            rTransform.SetPositionAnchorLocal(rTransform.GetParent().GetLocalPoint(position));
-            rTransform.SetSizeWorld(size);
+            transform.SetParent( newParent.transform, false );
+            rTransform.SetPositionAnchorLocal( rTransform.GetParent().GetLocalPoint( position ) );
+            rTransform.SetSizeWorld( size );
         }
         else
         {
-            transform.SetParent(newParent.transform, false);
+            transform.SetParent( newParent.transform, false );
         }
         parent = newParent;
-        parent.Children.Add(this);
+        parent.Children.Add( this );
     }
 
-    public void SetParent(GameObject newParent)
+    public void SetParent( GameObject newParent )
     {
-        SetParent(Lookup[newParent]);
+        SetParent( Lookup[ newParent ] );
     }
-    public void OnPointerClick(PointerEventData eventData)
+    public void OnPointerClick( PointerEventData eventData )
     {
-        if (HierarchyView.Select(gameObject)) return;
+        if (HierarchyView.Select( gameObject )) return;
     }
 
     public void OnSelected()

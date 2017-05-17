@@ -25,13 +25,13 @@ public abstract class InspectorField : MonoBehaviour
     public class OnInspectorFieldChangedEvent : UnityEvent<object>
     { }
     public abstract object GetValue();
-    public abstract void SetValue(object value);
+    public abstract void SetValue( object value );
 
     [SerializeField]
     protected OnInspectorFieldChangedEvent onChanged;
 
-    public virtual void AddListener(UnityAction<object> callback)
+    public virtual void AddListener( UnityAction<object> callback )
     {
-        this.onChanged.AddListener(callback);
+        this.onChanged.AddListener( callback );
     }
 }

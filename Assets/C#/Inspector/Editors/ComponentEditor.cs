@@ -11,7 +11,7 @@ public class InspectorFieldAttribute : Attribute
     public string FieldName { get { return m_fieldName; } }
     private string m_fieldName;
 
-    public InspectorFieldAttribute(string fieldName)
+    public InspectorFieldAttribute( string fieldName )
     {
         this.m_fieldName = fieldName;
     }
@@ -26,16 +26,16 @@ public abstract class ComponentEditor : MonoBehaviour
 
     private Dictionary<string, MethodInfo> m_Hooks = new Dictionary<string, MethodInfo>();
     private Toggle m_StateToggle;
-    protected InspectorField GetField(string fieldName)
+    protected InspectorField GetField( string fieldName )
     {
-        return m_Fields[fieldName];
+        return m_Fields[ fieldName ];
     }
-        
+
     public bool IsActive()
     {
         return m_Active;
     }
-        
+
     protected virtual void Awake()
     {
         if (!m_Fixed)
@@ -50,7 +50,7 @@ public abstract class ComponentEditor : MonoBehaviour
         AddChangedHandlers();
     }
 
-    private void SetToggleState(bool state)
+    private void SetToggleState( bool state )
     {
         m_StateToggle.onValueChanged.RemoveAllListeners();
         m_StateToggle.isOn = state;
@@ -62,24 +62,24 @@ public abstract class ComponentEditor : MonoBehaviour
         m_StateToggle.onValueChanged.AddListener( SetState );
     }
 
-    protected void SetState(bool state)
+    protected void SetState( bool state )
     {
         if (m_Fixed) return;
         m_Active = state;
 
-        SetToggleState(state);
+        SetToggleState( state );
         foreach (Transform field in base.transform)
         {
             if (field.tag != "Header")
             {
-                field.gameObject.SetActive(state);
+                field.gameObject.SetActive( state );
             }
         }
         if (state)
         {
-                LayoutRebuilder.ForceRebuildLayoutImmediate( GameObject.Find("Canvas").GetComponent<RectTransform>() );
+            LayoutRebuilder.ForceRebuildLayoutImmediate( GameObject.Find( "Canvas" ).GetComponent<RectTransform>() );
             Canvas.ForceUpdateCanvases();
-            foreach (var canvasGroup in GetComponentsInChildren<CanvasGroup>(true))
+            foreach (var canvasGroup in GetComponentsInChildren<CanvasGroup>( true ))
             {
                 /*Debug.Log( canvasGroup .name);
                 var obj = canvasGroup.gameObject;
@@ -91,18 +91,18 @@ public abstract class ComponentEditor : MonoBehaviour
                  obj.AddComponent<CanvasGroup>() ;*/
             }
         }
-        if (InspectorView.SelectedItems.Count <= 1 || Input.GetKey(KeyCode.LeftControl) &&
-            Input.GetKey(KeyCode.LeftShift))
+        if (InspectorView.SelectedItems.Count <= 1 || Input.GetKey( KeyCode.LeftControl ) &&
+            Input.GetKey( KeyCode.LeftShift ))
         {
-            OnStateChanged(state);
+            OnStateChanged( state );
         }
     }
 
-    protected abstract void OnStateChanged(bool state);
+    protected abstract void OnStateChanged( bool state );
 
     protected virtual void InitializeHooks()
     {
-        m_Hooks = GetInspectorFieldHandlers(GetType());
+        m_Hooks = GetInspectorFieldHandlers( GetType() );
     }
 
     private void AddChangedHandlers()
@@ -112,37 +112,37 @@ public abstract class ComponentEditor : MonoBehaviour
             var field = child.GetComponent<InspectorField>();
             if (field != null)
             {
-                m_Fields.Add(field.Name, field);
-                field.AddListener(obj => OnFieldChanged(field.Name, obj));
+                m_Fields.Add( field.Name, field );
+                field.AddListener( obj => OnFieldChanged( field.Name, obj ) );
             }
         }
     }
-    
 
-    public abstract void OnItemsSelected( List<CUIObject> newItems);
 
-    protected virtual void OnFieldChanged(string field, object value)
+    public abstract void OnItemsSelected( List<CUIObject> newItems );
+
+    protected virtual void OnFieldChanged( string field, object value )
     {
         MethodInfo method;
-        if (m_Hooks.TryGetValue(field, out method))
+        if (m_Hooks.TryGetValue( field, out method ))
         {
-            method.Invoke(this, new object[] {value});
+            method.Invoke( this, new object[] { value } );
         }
     }
 
-    protected Dictionary<string, MethodInfo> GetInspectorFieldHandlers(Type type)
+    protected Dictionary<string, MethodInfo> GetInspectorFieldHandlers( Type type )
     {
         return type
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance)
-            .Where(m => m.GetCustomAttributes(typeof(InspectorFieldAttribute), false).Length > 0)
+            .GetMethods( BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance )
+            .Where( m => m.GetCustomAttributes( typeof( InspectorFieldAttribute ), false ).Length > 0 )
             .ToDictionary(
-                m => ((InspectorFieldAttribute)m.GetCustomAttributes(typeof(InspectorFieldAttribute), false)[0]).FieldName,
-                m => m);
+                m => ( (InspectorFieldAttribute) m.GetCustomAttributes( typeof( InspectorFieldAttribute ), false )[ 0 ] ).FieldName,
+                m => m );
     }
 
     protected Dictionary<string, MethodInfo> GetInspectorFieldHandlers<T>()
     {
-        return GetInspectorFieldHandlers(typeof(T));
+        return GetInspectorFieldHandlers( typeof( T ) );
     }
 }
 
@@ -171,7 +171,7 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
         m_ComponentHooks = GetInspectorFieldHandlers<CT>();
     }
 
-    protected override void OnStateChanged(bool state)
+    protected override void OnStateChanged( bool state )
     {
         if (state)
         {
@@ -192,35 +192,35 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
         }
     }
 
-    protected override void OnFieldChanged(string field, object value)
+    protected override void OnFieldChanged( string field, object value )
     {
         MethodInfo method;
-        if (m_ComponentHooks.TryGetValue(field, out method))
+        if (m_ComponentHooks.TryGetValue( field, out method ))
         {
             foreach (var comp in InspectorView.GetSelectedComponents<CT>())
             {
-                method.Invoke(comp, new object[] {value});
+                method.Invoke( comp, new object[] { value } );
             }
         }
         else
         {
-            throw new Exception("Field doesnt have handler in component");
+            throw new Exception( "Field doesnt have handler in component" );
         }
-        base.OnFieldChanged(field, value);
+        base.OnFieldChanged( field, value );
     }
 
-    public abstract void Load(CCT component);
+    public abstract void Load( CCT component );
 
-    public override void OnItemsSelected(List<CUIObject> newItems)
+    public override void OnItemsSelected( List<CUIObject> newItems )
     {
         if (newItems == null || newItems.Count == 0 ||
-            newItems.Any(cuiObject => cuiObject.GetCuiComponent<CCT>() == null))
+            newItems.Any( cuiObject => cuiObject.GetCuiComponent<CCT>() == null ))
         {
-            SetState(false);
+            SetState( false );
             return;
         }
-        SetState(true);
-        Load(newItems.Last().GetCuiComponent<CCT>());
+        SetState( true );
+        Load( newItems.Last().GetCuiComponent<CCT>() );
     }
 
 }

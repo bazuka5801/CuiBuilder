@@ -11,7 +11,7 @@ namespace Inspector.UIControls
         {
             EnableEvents();
         }
-        
+
         private void DisableEvents()
         {
             m_InputField.onEndEdit.RemoveAllListeners();
@@ -19,7 +19,7 @@ namespace Inspector.UIControls
 
         private void EnableEvents()
         {
-           m_InputField.onEndEdit.AddListener((s)=>onChanged.Invoke(s));
+            m_InputField.onEndEdit.AddListener( ( s ) => onChanged.Invoke( s ) );
         }
 
 
@@ -28,7 +28,7 @@ namespace Inspector.UIControls
             return m_InputField.text;
         }
 
-        public override void SetValue(object value)
+        public override void SetValue( object value )
         {
             DisableEvents();
             m_InputField.text = value == null ? "" : value.ToString();

@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class CursorManager : MonoBehaviour {
+public class CursorManager : MonoBehaviour
+{
     public enum CursorMode
     {
         Arrow,
@@ -50,22 +51,22 @@ public class CursorManager : MonoBehaviour {
         };
     }
 
-    public static void SetCursor(CursorMode mode)
+    public static void SetCursor( CursorMode mode )
     {
-        _instance.set_cursor(mode);
+        _instance.set_cursor( mode );
     }
-    public static void SetCursorByAnchor(Vector2 anchor)
+    public static void SetCursorByAnchor( Vector2 anchor )
     {
-        if (!AnchorModes.ContainsKey(anchor))Debug.LogError("Anchor not contained: "+anchor);
-        SetCursor(AnchorModes[anchor]);
-    }
-
-    private void set_cursor(CursorMode mode)
-    {
-        Cursor.SetCursor(GetTexture2D(mode), offsets[mode], UnityEngine.CursorMode.Auto);
+        if (!AnchorModes.ContainsKey( anchor )) Debug.LogError( "Anchor not contained: " + anchor );
+        SetCursor( AnchorModes[ anchor ] );
     }
 
-    public Texture2D GetTexture2D(CursorMode mode)
+    private void set_cursor( CursorMode mode )
+    {
+        Cursor.SetCursor( GetTexture2D( mode ), offsets[ mode ], UnityEngine.CursorMode.Auto );
+    }
+
+    public Texture2D GetTexture2D( CursorMode mode )
     {
         switch (mode)
         {

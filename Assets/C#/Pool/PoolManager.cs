@@ -11,10 +11,11 @@ public interface IPoolHandler
 [System.Serializable]
 public class Pool
 {
-    
+
 }
 
-public class PoolManager : MonoBehaviour {
+public class PoolManager : MonoBehaviour
+{
 
     [SerializeField] private GameObject Prefab;
     [SerializeField] private int StartCount;
@@ -34,9 +35,9 @@ public class PoolManager : MonoBehaviour {
     {
         if (Collection.Count > 0)
         {
-            var obj = Collection[0];
-            Collection.RemoveAt(0);
-            OnPoolLeave(obj);
+            var obj = Collection[ 0 ];
+            Collection.RemoveAt( 0 );
+            OnPoolLeave( obj );
             return obj;
         }
         Create();
@@ -45,47 +46,47 @@ public class PoolManager : MonoBehaviour {
 
     private void Create()
     {
-        var obj = Object.Instantiate(Prefab);
-        OnPoolEnter(obj);
+        var obj = Object.Instantiate( Prefab );
+        OnPoolEnter( obj );
     }
 
-    public static void Release(GameObject obj)
+    public static void Release( GameObject obj )
     {
-        m_Instance.OnPoolEnter(obj);
+        m_Instance.OnPoolEnter( obj );
     }
 
-    private void OnPoolEnter(GameObject obj)
+    private void OnPoolEnter( GameObject obj )
     {
-        foreach (var handler in GetHandlers(obj))
+        foreach (var handler in GetHandlers( obj ))
             handler.OnPoolEnter();
-        obj.SetActive(false);
-        obj.transform.SetParent(transform, false);
-        Collection.Add(obj);
+        obj.SetActive( false );
+        obj.transform.SetParent( transform, false );
+        Collection.Add( obj );
     }
 
-    private void OnPoolLeave(GameObject obj)
+    private void OnPoolLeave( GameObject obj )
     {
-        Collection.Remove(obj);
-        obj.SetActive(true);
-        foreach (var handler in GetHandlers(obj))
+        Collection.Remove( obj );
+        obj.SetActive( true );
+        foreach (var handler in GetHandlers( obj ))
             handler.OnPoolLeave();
     }
 
-    public IEnumerable<IPoolHandler> GetHandlers(GameObject obj)
+    public IEnumerable<IPoolHandler> GetHandlers( GameObject obj )
     {
-        return obj.GetComponents(typeof(IPoolHandler)).OfType<IPoolHandler>();
+        return obj.GetComponents( typeof( IPoolHandler ) ).OfType<IPoolHandler>();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
+        if (Input.GetKeyDown( KeyCode.X ))
         {
             var obj = Get();
-            obj.transform.SetParent(GameObject.Find("Overlay").transform, false);
-            HierarchyView.AddChild(obj);
-            obj.GetComponent<RectTransform>().SetRect(new Vector2(0.3f, 0.2f), new Vector2(0.4f, 0.3f));
-            obj.GetComponent<RectTransform>().SetSizePixel(new Vector2(100, 100));
-            Hierarchy.Lookup[obj].SetParent(Hierarchy.Lookup[GameObject.Find("Overlay")]);
+            obj.transform.SetParent( GameObject.Find( "Overlay" ).transform, false );
+            HierarchyView.AddChild( obj );
+            obj.GetComponent<RectTransform>().SetRect( new Vector2( 0.3f, 0.2f ), new Vector2( 0.4f, 0.3f ) );
+            obj.GetComponent<RectTransform>().SetSizePixel( new Vector2( 100, 100 ) );
+            Hierarchy.Lookup[ obj ].SetParent( Hierarchy.Lookup[ GameObject.Find( "Overlay" ) ] );
         }
     }
 }

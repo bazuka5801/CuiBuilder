@@ -1,11 +1,10 @@
 ﻿using Oxide.Game.Rust.Cui;
 using UnityEngine;
-using UnityEngine.UI;
 
 public abstract class BaseComponent : MonoBehaviour
 {
     protected CUIObject cuiObject;
-    
+
     protected virtual void Awake()
     {
         cuiObject = GetComponent<CUIObject>();
