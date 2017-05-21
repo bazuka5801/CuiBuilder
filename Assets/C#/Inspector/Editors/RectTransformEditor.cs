@@ -15,25 +15,25 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         get { return InspectorView.SelectedItems.Select( p => (RectTransform) p.transform ); }
     }
 
-    [InspectorField( "anchormin" )]
+    [CuiField( "anchormin" )]
     private void OnAnchorMinChanged( object value )
     {
         OnAnchorChanged();
     }
 
-    [InspectorField( "anchormax" )]
+    [CuiField( "anchormax" )]
     private void OnAnchorMaxChanged( object value )
     {
         OnAnchorChanged();
     }
 
-    [InspectorField( "position" )]
+    [CuiField( "position" )]
     private void OnPositionChanged( object value )
     {
         OnPixelChanged();
     }
 
-    [InspectorField( "size" )]
+    [CuiField( "size" )]
     private void OnSizeChanged( object value )
     {
         OnPixelChanged();
@@ -110,7 +110,7 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
 
         Vector2? anchorMax = GetField( "anchormax" ).GetValue() as Vector2?;
         if (anchorMax == null) return;
-        var localSize = m_SelectedTransform.GetSizePixelLocal();
+        var localSize = m_SelectedTransform.GetSizePixelWorld();
         GetField( "size" ).SetValue( localSize );
     }
 

@@ -396,11 +396,6 @@ namespace Battlehub.UIControls
                     m_itemLayout.padding.top,
                     m_itemLayout.padding.bottom);
             }
-
-            if (CanExpand && TreeView.AutoExpand)
-            {
-                IsExpanded = true;
-            }
         }
 
         public override void Clear()
@@ -412,9 +407,11 @@ namespace Battlehub.UIControls
             m_toggle.isOn = m_isSelected;
             m_isExpanded = false;
             m_canExpand = false;
-            m_expander.IsOn = false;
-            m_expander.CanExpand = false;
-          
+            if (m_expander != null)
+            {
+                m_expander.IsOn = false;
+                m_expander.CanExpand = false;
+            }
         }
     }
 }

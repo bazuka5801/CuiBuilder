@@ -51,7 +51,7 @@ public class ColorSliderImage : MonoBehaviour
     private void OnDestroy()
     {
         if (image.texture != null)
-            DestroyImmediate(image.texture);
+            DestroyImmediate(image.texture, true);
     }
 
 #if UNITY_EDITOR

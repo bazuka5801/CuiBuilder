@@ -73,7 +73,7 @@ public static class RustCanvasEx
 
     public static Vector2 GetPositionPixelLocal( this RectTransform transform )
     {
-        return Vector2.Scale( transform.anchorMin, transform.GetParent().GetSizePixelLocal() );
+        return Vector2.Scale( transform.anchorMin, transform.GetParent().GetSizePixelWorld() );
     }
 
     public static Vector2 GetPositionPixelWorld( this RectTransform transform )
@@ -83,8 +83,7 @@ public static class RustCanvasEx
 
     public static void SetPositionPixelLocal( this RectTransform transform, Vector2 position )
     {
-        transform.SetRect( Vector2.Scale( transform.GetPixelShiftLocal(), position ),
-            transform.anchorMax - transform.anchorMin + Vector2.Scale( transform.GetPixelShiftLocal(), position ) );
+        transform.SetPositionAnchorLocal( Vector2.Scale( transform.GetPixelShiftLocal(), position ) );
     }
 
     #endregion
@@ -124,13 +123,7 @@ public static class RustCanvasEx
     #endregion
 
     #region Pixel
-
-    public static Vector2 GetSizePixelLocal( this RectTransform transform )
-    {
-        return transform.GetPixel( transform.GetParent().GetWorldPoint( transform.anchorMax ) -
-                                  transform.GetParent().GetWorldPoint( transform.anchorMin ) );
-    }
-
+    
     public static Vector2 GetSizePixelWorld( this RectTransform transform )
     {
         return transform.GetPixel( transform.GetSizeWorld() );
@@ -170,7 +163,7 @@ public static class RustCanvasEx
 
     public static Vector2 GetPixelShiftLocal( this RectTransform transform )
     {
-        return ( ( (RectTransform) transform.parent ).GetSizeWorld().Div( ScreenVec ) );
+        return ( ( Vector2.one).Div(Vector2.Scale( ScreenVec, ( (RectTransform) transform.parent ).GetSizeWorld()) ) );
     }
 
     #endregion

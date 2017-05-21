@@ -26,7 +26,8 @@ public class CUIObject : MonoBehaviour, IPoolHandler
     {
         var element = new CuiElement()
         {
-            Name = Name
+            Name = Name,
+            Parent = transform.parent.name
         };
         if (!Mathf.Approximately( FadeOut, 0f ))
         {
@@ -39,6 +40,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler
         return element;
     }
 
+
     public void Awake()
     {
         Lookup[ gameObject ] = this;
@@ -48,26 +50,67 @@ public class CUIObject : MonoBehaviour, IPoolHandler
     {
         name = "CuiElement";
         FadeOut = 0f;
+        foreach (var component in GetComponents(typeof(BaseComponent)))
+        {
+            if (component.GetType() != typeof(RectTransformComponent))
+            {
+                DestroyImmediate(component);
+            }
+        }
         Components.RemoveAll( p => p.GetType() != typeof( CuiRectTransformComponent ) );
         Lookup.Remove( gameObject );
     }
 
-    public void OnComponentStateChanged<CT, CCT>( ComponentEditor<CT, CCT> component, bool state )
-        where CCT : ICuiComponent
-        where CT : BaseComponent<CCT>
+    public void OnComponentStateChanged( Type componentType, bool state )
     {
         if (state)
         {
-            if (Components.Any( c => c is CCT )) return;
-            Components.Add( (CCT) Activator.CreateInstance( typeof( CCT ) ) );
-            gameObject.AddComponent<CT>();
+            LoadCuiComponent( (ICuiComponent) Activator.CreateInstance( componentType ) );
         }
         else
         {
-            if (Components.All( c => !( c is CCT ) )) return;
-            Components.Remove( GetCuiComponent<CCT>() );
-            DestroyImmediate( GetComponent<CT>() );
+            DestroyCuiComponent( componentType );
         }
+    }
+
+    public void Load(CuiElement element)
+    {
+        ChangeName(element.Name);
+        FadeOut = element.FadeOut;
+        GetComponent<Hierarchy>().SetParent(element.Parent);
+        foreach (var component in element.Components)
+        {
+            LoadCuiComponent(component);
+        }
+    }
+
+    public void ChangeName(string newName)
+    {
+        HierarchyView.ChangeName( gameObject, newName );
+    }
+
+    public void LoadCuiComponent( ICuiComponent cuiComponent )
+    {
+        var cuiComponentType = cuiComponent.GetType();
+        var componentType = BaseComponent.GetComponentType( cuiComponentType );
+        if (Components.Any(c => c.GetType() == cuiComponentType))
+        {
+            ((BaseComponent)GetComponent( componentType )).LoadInternal( cuiComponent );
+            return;
+        }
+        Components.Add( cuiComponent );
+        var component = (BaseComponent)gameObject.AddComponent( componentType );
+        component.LoadInternal(cuiComponent);
+    }
+
+    public void DestroyCuiComponent( Type cuiComponentType )
+    {
+        var cuiComponent = Components.FirstOrDefault(p=>p.GetType() == cuiComponentType );
+        if (cuiComponent == null) return;
+
+        var componentType = BaseComponent.GetComponentType( cuiComponentType );
+        Components.Remove( cuiComponent );
+        DestroyImmediate( GetComponent( componentType ) );
     }
 
     public bool CanBeAdd<CT, CCT>()
@@ -94,7 +137,8 @@ public class CUIObject : MonoBehaviour, IPoolHandler
     {
         if (Input.GetKeyDown( KeyCode.C ))
         {
-            Debug.Log( CuiHelper.ToJson( new CuiElementContainer() { GetCuiElement() } ) );
+            Debug.Log( string.Join( ", ", HierarchyView.GetCurrent().Select( p => p.Name ).ToArray() ) );
+            //Debug.Log( CuiHelper.ToJson( new CuiElementContainer() { GetCuiElement() } ) );
         }
     }
 }

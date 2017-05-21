@@ -26,13 +26,13 @@ public class BackgroundManager : MonoBehaviour
             Sprite s = Sprite.Create( t, new Rect( 0, 0, t.width, t.height ), new Vector2( 0.5f, 0.5f ) );
             sprites.Add( Path.GetFileNameWithoutExtension( filename ), s );
         }
-        SetBackground( ResolutionManager.GetAspect() );
+        SetBackground( AspectManager.GetAspect() );
     }
 
     public void ToggleInventory()
     {
         m_Inventory = !m_Inventory;
-        SetBackground( ResolutionManager.GetAspect() );
+        SetBackground( AspectManager.GetAspect() );
     }
 
     public void SetBackground( string res )

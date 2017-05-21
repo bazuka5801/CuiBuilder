@@ -3,7 +3,7 @@ using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OutlineComponent : BaseComponent<CuiOutlineComponent>
+public sealed class OutlineComponent : BaseComponent<CuiOutlineComponent>
 {
     private Outline m_Outline;
 
@@ -18,7 +18,14 @@ public class OutlineComponent : BaseComponent<CuiOutlineComponent>
         DestroyImmediate( m_Outline );
     }
 
-    [InspectorField( "distance" )]
+    protected override void Load( CuiOutlineComponent component )
+    {
+        OnDistanceChanged( component.Distance );
+        OnUseGraphicAlphaChanged( component.UseGraphicAlpha );
+        OnColorChanged( component.Color );
+    }
+
+    [CuiField( "distance" )]
     private void OnDistanceChanged( object value )
     {
         var type = value.GetType();
@@ -30,12 +37,18 @@ public class OutlineComponent : BaseComponent<CuiOutlineComponent>
         }
         else
         {
+            var vec = Vector2Ex.Parse(value.ToString());
+            if (vec != Vector2.zero)
+            {
+                OnDistanceChanged(vec);
+                return;
+            }
             m_Outline.effectDistance = new Vector2( 1, -1 );
             CuiComponent.Distance = value.ToString();
         }
     }
 
-    [InspectorField( "usegraphicalpha" )]
+    [CuiField( "usegraphicalpha" )]
     private void OnUseGraphicAlphaChanged( object value )
     {
         var useGraphicAlpha = Convert.ToBoolean( value );
@@ -43,7 +56,7 @@ public class OutlineComponent : BaseComponent<CuiOutlineComponent>
         CuiComponent.UseGraphicAlpha = useGraphicAlpha;
     }
 
-    [InspectorField( "color" )]
+    [CuiField( "color" )]
     private void OnColorChanged( object value )
     {
         m_Outline.effectColor = ColorEx.Parse( value.ToString() );

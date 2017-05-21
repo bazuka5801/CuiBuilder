@@ -61,6 +61,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         {
             transform.SetPositionAnchorLocal( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
         }
+        if (Input.GetKeyDown(KeyCode.B) && Input.GetKey(KeyCode.LeftControl))
+        {
+            transform.SetPositionAnchorLocal(new Vector2(0.5f,0.5f)-transform.GetSizeWorld()*0.5f); TransformEditorUpdate();
+        }
     }
 
     #region Event Handlers

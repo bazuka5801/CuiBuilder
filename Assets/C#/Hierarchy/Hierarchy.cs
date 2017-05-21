@@ -22,6 +22,29 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
         Init();
     }
 
+    public static Hierarchy FindByName(string name)
+    {
+        foreach (var root in HierarchyView.GetRoot())
+        {
+            var res = FindRecursive(name, Lookup[root]);
+            if (res != null) return res;
+        }
+        return null;
+    }
+
+    private static Hierarchy FindRecursive(string name, Hierarchy start)
+    {
+        if (start.Children.Count == 0) return null;
+
+        foreach (var child in start.Children)
+        {
+            if (child.name == name) return child;
+            var res = FindRecursive(name, child);
+            if (res != null) return res;
+        }
+        return null;
+    }
+
     private void Init()
     {
         foreach (Transform childT in transform)
@@ -39,6 +62,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     public void OnPoolEnter()
     {
         Lookup.Remove( gameObject );
+        HierarchyView.Remove(gameObject);
         Children.Clear();
         parent = null;
     }
@@ -68,6 +92,18 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
         }
         parent = newParent;
         parent.Children.Add( this );
+        if (!HierarchyView.IsCreated(gameObject))
+            HierarchyView.AddChild( gameObject );
+        HierarchyView.ChangeParent( parent.gameObject, gameObject );
+    }
+
+    public void SetParent(string parentName)
+    {
+        Hierarchy parent = Lookup.Values.FirstOrDefault(hierarchy => hierarchy.name == parentName);
+        if (parent != null)
+        {
+            SetParent(parent);
+        }
     }
 
     public void SetParent( GameObject newParent )

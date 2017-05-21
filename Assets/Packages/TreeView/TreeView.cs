@@ -464,11 +464,7 @@ namespace Battlehub.UIControls
         {
             int parentSiblingIndex = parent.transform.GetSiblingIndex();
             int siblingIndex = child.transform.GetSiblingIndex();
-            bool incrementSiblingIndex = false;
-            if (parentSiblingIndex < siblingIndex)
-            {
-                incrementSiblingIndex = true;
-            }
+            bool incrementSiblingIndex = parentSiblingIndex < siblingIndex;
 
             TreeViewItem prev = parent;
             while (child != null && child.IsDescendantOf(parent))

@@ -1,6 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Oxide.Game.Rust.Cui;
-using UnityEngine;
+﻿using Oxide.Game.Rust.Cui;
 
-public class NeedsCursorComponent : BaseComponent<CuiNeedsCursorComponent> { }
+public sealed class NeedsCursorComponent : BaseComponent<CuiNeedsCursorComponent> {
+    protected override void Load(CuiNeedsCursorComponent component)
+    {
+
+    }
+}

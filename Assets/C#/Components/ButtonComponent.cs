@@ -1,7 +1,7 @@
 ﻿using Oxide.Game.Rust.Cui;
 using UnityEngine.UI;
 
-public class ButtonComponent : BaseComponent<CuiButtonComponent>, IGraphicComponent, ISelectableComponent
+public sealed class ButtonComponent : BaseComponent<CuiButtonComponent>, IGraphicComponent, ISelectableComponent
 {
     private Button m_Button;
     private RawImage m_Image;
@@ -20,31 +20,40 @@ public class ButtonComponent : BaseComponent<CuiButtonComponent>, IGraphicCompon
         DestroyImmediate( m_Image );
     }
 
-    [InspectorField( "command" )]
+    protected override void Load(CuiButtonComponent component )
+    {
+        OnCommandChanged(component.Command);
+        OnCloseChanged(component.Close);
+        OnSpriteChanged( component.Sprite );
+        OnMaterialChanged( component.Material );
+        OnColorChanged(component.Color);
+    }
+
+    [CuiField( "command" )]
     private void OnCommandChanged( object value )
     {
         CuiComponent.Command = value.ToString();
     }
 
-    [InspectorField( "close" )]
+    [CuiField( "close" )]
     private void OnCloseChanged( object value )
     {
         CuiComponent.Close = value.ToString();
     }
 
-    [InspectorField( "sprite" )]
+    [CuiField( "sprite" )]
     private void OnSpriteChanged( object value )
     {
         CuiComponent.Sprite = value.ToString();
     }
 
-    [InspectorField( "material" )]
+    [CuiField( "material" )]
     private void OnMaterialChanged( object value )
     {
         CuiComponent.Material = value.ToString();
     }
 
-    [InspectorField( "color" )]
+    [CuiField( "color" )]
     private void OnColorChanged( object value )
     {
         m_Image.color = ColorEx.Parse( value.ToString() );

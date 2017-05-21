@@ -21,8 +21,15 @@ public class HierarchyView : MonoBehaviour
     public TreeView TreeView;
     public List<GameObject> Root;
 
+    public static List<GameObject> GetRoot()
+    {
+        return m_Instance.Root;
+    }
 
-
+    public static bool IsCreated(GameObject obj)
+    {
+        return m_Instance.TreeView.GetTreeViewItem(obj) != null;
+    }
 
     public static bool IsPrefab( Transform This )
     {
@@ -45,6 +52,7 @@ public class HierarchyView : MonoBehaviour
             Debug.LogError( "Set TreeView field" );
             return;
         }
+
         IEnumerable<GameObject> dataItems = Root;
 
         //subscribe to events
@@ -81,6 +89,13 @@ public class HierarchyView : MonoBehaviour
         return true;
     }
 
+    public static void Remove(GameObject obj)
+    {
+        if (obj.transform.parent == null) return;
+        var parent = obj.transform.parent.gameObject;
+        m_Instance.TreeView.RemoveChild(parent,obj, (parent.transform.childCount-1) == obj.transform.GetSiblingIndex());
+    }
+
     private void OnItemBeginDrop( object sender, ItemDropCancelArgs e )
     {
         GameObject dropTarget = (GameObject) e.DropTarget;
@@ -89,6 +104,16 @@ public class HierarchyView : MonoBehaviour
             e.Cancel = true;
         }
 
+    }
+
+    public static List<CUIObject> GetCurrent()
+    {
+        var elements = new List<CUIObject>();
+        foreach (var root in m_Instance.Root)
+        {
+            elements.AddRange(root.GetComponentsInChildren<CUIObject>());
+        }
+        return elements;
     }
 
     private void OnDestroy()
@@ -156,11 +181,6 @@ public class HierarchyView : MonoBehaviour
         //Do something on selection changed (just syncronized with editor's hierarchy for demo purposes)
         UnityEditor.Selection.objects = e.NewItems.OfType<GameObject>().ToArray();
 #endif
-        if (e.NewItems.Any( p => Root.Contains( (GameObject) p ) ))
-        {
-            TreeView.SelectedItems = e.NewItems.Where( p => !Root.Contains( (GameObject) p ) );
-            return;
-        }
         foreach (var oldItem in e.OldItems.Cast<GameObject>())
         {
             SendSelectEvent( oldItem, ( i ) => i.OnUnselected() );
@@ -168,6 +188,11 @@ public class HierarchyView : MonoBehaviour
         foreach (var newItem in e.NewItems.Cast<GameObject>())
         {
             SendSelectEvent( newItem, ( i ) => i.OnSelected() );
+        }
+        if (e.NewItems.Any( p => Root.Contains( (GameObject) p ) ))
+        {
+            TreeView.SelectedItems = e.NewItems.Where( p => !Root.Contains( (GameObject) p ) );
+            return;
         }
     }
 
@@ -213,7 +238,7 @@ public class HierarchyView : MonoBehaviour
             Text text = e.ItemPresenter.GetComponentInChildren<Text>( true );
             text.text = dataItem.name;
 
-            //Load icon from resources
+            //LoadInternal icon from resources
             Image icon = e.ItemPresenter.GetComponentsInChildren<Image>()[ 4 ];
             icon.sprite = Resources.Load<Sprite>( "cube" );
 
@@ -307,6 +332,15 @@ public class HierarchyView : MonoBehaviour
 
     }
 
+
+    public static void ChangeParent(GameObject newParent, GameObject item)
+    {
+        m_Instance.TreeView.ChangeParent(newParent, item);
+        if (m_Instance.TreeView.GetTreeViewItem(newParent) == null) return;
+
+        m_Instance.TreeView.GetTreeViewItem( newParent ).CanExpand = true;
+        m_Instance.TreeView.GetTreeViewItem( newParent ).IsExpanded = true;
+    }
 
     public static void AddChild( GameObject obj )
     {

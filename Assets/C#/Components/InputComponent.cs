@@ -3,7 +3,7 @@ using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicComponent, ISelectableComponent
+public sealed class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicComponent, ISelectableComponent
 {
     private Text m_Text;
 
@@ -20,13 +20,24 @@ public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicCom
         DestroyImmediate( m_Text );
     }
 
-    [InspectorField( "font" )]
+    protected override void Load( CuiInputFieldComponent component )
+    {
+        OnFontChanged( component.Font );
+        OnFontSizeChanged( component.FontSize );
+        OnAlignChanged( (int)component.Align );
+        OnColorChanged( component.Color );
+        OnCharLimitChanged( component.CharsLimit );
+        OnCommandChanged( component.Command );
+        OnPasswordChanged( component.IsPassword );
+    }
+
+    [CuiField( "font" )]
     private void OnFontChanged( object value )
     {
         CuiComponent.Font = value.ToString();
     }
 
-    [InspectorField( "fontsize" )]
+    [CuiField( "fontsize" )]
     private void OnFontSizeChanged( object value )
     {
         var text = value.ToString();
@@ -39,7 +50,7 @@ public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicCom
         CuiComponent.FontSize = fontSize;
     }
 
-    [InspectorField( "align" )]
+    [CuiField( "align" )]
     private void OnAlignChanged( object value )
     {
         var textAnchor = (TextAnchor) value;
@@ -47,14 +58,14 @@ public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicCom
         CuiComponent.Align = textAnchor;
     }
 
-    [InspectorField( "color" )]
+    [CuiField( "color" )]
     private void OnColorChanged( object value )
     {
         m_Text.color = ColorEx.Parse( value.ToString() );
         CuiComponent.Color = value.ToString();
     }
 
-    [InspectorField( "charlimit" )]
+    [CuiField( "charlimit" )]
     private void OnCharLimitChanged( object value )
     {
         var text = value.ToString();
@@ -66,13 +77,13 @@ public class InputComponent : BaseComponent<CuiInputFieldComponent>, IGraphicCom
         CuiComponent.CharsLimit = charLimit;
     }
 
-    [InspectorField( "command" )]
+    [CuiField( "command" )]
     private void OnCommandChanged( object value )
     {
         CuiComponent.Command = value.ToString();
     }
 
-    [InspectorField( "password" )]
+    [CuiField( "password" )]
     private void OnPasswordChanged( object value )
     {
         CuiComponent.IsPassword = Convert.ToBoolean( value );

@@ -18,7 +18,17 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
         DestroyImmediate( m_Text );
     }
 
-    [InspectorField( "text" )]
+    protected override void Load( CuiTextComponent component )
+    {
+        OnTextChanged( component.Text );
+        OnFontChanged( component.Font );
+        OnFontSizeChanged( component.FontSize );
+        OnAlignChanged( (int)component.Align );
+        OnColorChanged( component.Color );
+        OnFadeInChanged( component.FadeIn );
+    }
+
+    [CuiField( "text" )]
     private void OnTextChanged( object value )
     {
         var text = value.ToString();
@@ -26,13 +36,13 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
         CuiComponent.Text = text;
     }
 
-    [InspectorField( "font" )]
+    [CuiField( "font" )]
     private void OnFontChanged( object value )
     {
         CuiComponent.Font = value.ToString();
     }
 
-    [InspectorField( "fontsize" )]
+    [CuiField( "fontsize" )]
     private void OnFontSizeChanged( object value )
     {
         var text = value.ToString();
@@ -45,7 +55,7 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
         CuiComponent.FontSize = fontSize;
     }
 
-    [InspectorField( "align" )]
+    [CuiField( "align" )]
     private void OnAlignChanged( object value )
     {
         var textAnchor = (TextAnchor) value;
@@ -53,14 +63,14 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
         CuiComponent.Align = textAnchor;
     }
 
-    [InspectorField( "color" )]
+    [CuiField( "color" )]
     private void OnColorChanged( object value )
     {
         m_Text.color = ColorEx.Parse( value.ToString() );
         CuiComponent.Color = value.ToString();
     }
 
-    [InspectorField( "fadein" )]
+    [CuiField( "fadein" )]
     private void OnFadeInChanged( object value )
     {
         float fadeIn;

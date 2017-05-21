@@ -1,7 +1,7 @@
 ﻿using Oxide.Game.Rust.Cui;
 using UnityEngine;
 
-public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
+public sealed class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
 {
     private RectTransform m_Transform;
 
@@ -11,7 +11,13 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         m_Transform = (RectTransform) base.transform;
     }
 
-    [InspectorField( "anchormin" )]
+    protected override void Load( CuiRectTransformComponent component )
+    {
+        OnAnchorMinChanged(component.AnchorMin);
+        OnAnchorMaxChanged(component.AnchorMax);
+    }
+
+    [CuiField( "anchormin" )]
     private void OnAnchorMinChanged( object value )
     {
         var type = value.GetType();
@@ -23,12 +29,18 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
         else
         {
+            var vec = Vector2Ex.Parse( value.ToString() );
+            if (vec != Vector2.zero)
+            {
+                OnAnchorMinChanged( vec );
+                return;
+            }
             m_Transform.SetPositionAnchorLocal( new Vector2( 0.1f, 0.1f ) );
             CuiComponent.AnchorMin = value.ToString();
         }
     }
 
-    [InspectorField( "anchormax" )]
+    [CuiField( "anchormax" )]
     private void OnAnchorMaxChanged( object value )
     {
         var type = value.GetType();
@@ -40,12 +52,18 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
         else
         {
+            var vec = Vector2Ex.Parse( value.ToString() );
+            if (vec != Vector2.zero)
+            {
+                OnAnchorMaxChanged( vec );
+                return;
+            }
             m_Transform.SetSizePixel( new Vector2( 100f, 100f ) );
             CuiComponent.AnchorMax = value.ToString();
         }
     }
 
-    [InspectorField( "position" )]
+    [CuiField( "position" )]
     private void OnPositionChanged( object value )
     {
         var type = value.GetType();
@@ -57,7 +75,7 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
             CuiComponent.AnchorMax = string.Format( "{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y );
         }
     }
-    [InspectorField( "size" )]
+    [CuiField( "size" )]
     private void OnSizeChanged( object value )
     {
         var type = value.GetType();
@@ -70,7 +88,7 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
     }
 
 
-    [InspectorField( "offsetmin" )]
+    [CuiField( "offsetmin" )]
     private void OnOffsetMinChanged( object value )
     {
         var type = value.GetType();
@@ -87,7 +105,7 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
     }
 
-    [InspectorField( "offsetmax" )]
+    [CuiField( "offsetmax" )]
     private void OnOffsetMaxChanged( object value )
     {
         var type = value.GetType();
@@ -104,4 +122,12 @@ public class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
         }
     }
 
+    public void SetPixelLocalPosition(Vector2 pos)
+    {
+        OnPositionChanged(pos);
+    }
+    public void SetPixelSize( Vector2 pos )
+    {
+        OnSizeChanged( pos );
+    }
 }

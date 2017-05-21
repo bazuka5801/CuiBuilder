@@ -17,32 +17,43 @@ public sealed class ImageComponent : BaseComponent<CuiRawImageComponent>, IGraph
         DestroyImmediate( m_Image );
     }
 
-    [InspectorField( "sprite" )]
+    protected override void Load( CuiRawImageComponent component )
+    {
+        OnSpriteChanged( component.Sprite );
+        OnMaterialChanged( component.Material );
+        OnColorChanged( component.Color );
+        OnPngChanged( component.Png );
+        OnFadeInChanged( component.FadeIn );
+    }
+
+    [CuiField( "sprite" )]
     private void OnSpriteChanged( object value )
     {
         CuiComponent.Sprite = value.ToString();
     }
 
-    [InspectorField( "material" )]
+    [CuiField( "material" )]
     private void OnMaterialChanged( object value )
     {
         CuiComponent.Material = value.ToString();
     }
 
-    [InspectorField( "color" )]
+    [CuiField( "color" )]
     private void OnColorChanged( object value )
     {
         CuiComponent.Color = value.ToString();
         m_Image.color = ColorEx.Parse( value.ToString() );
     }
 
-    [InspectorField( "png" )]
+    [CuiField( "png" )]
     private void OnPngChanged( object value )
     {
-        CuiComponent.Png = value.ToString();
+        var url = value.ToString();
+        CuiComponent.Png = url;
+        m_Image.texture = ImageStorage.Get(url);
     }
 
-    [InspectorField( "fadein" )]
+    [CuiField( "fadein" )]
     private void OnFadeInChanged( object value )
     {
         float fadeIn;

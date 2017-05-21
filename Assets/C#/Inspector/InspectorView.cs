@@ -1,6 +1,7 @@
 ﻿using Battlehub.UIControls;
 using System.Collections.Generic;
 using System.Linq;
+using Inspector.UIControls;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,6 +12,8 @@ public class InspectorView : MonoBehaviour
     private ScrollRect m_scrollRect;
 
     [SerializeField] Transform m_PanelsContainer;
+    [SerializeField] InputBox m_NameField;
+    [SerializeField] FloatBox m_FadeOutField;
 
     private IEnumerable<ComponentEditor> m_Components;
     private IEnumerable<ComponentEditor> m_ActiveComponents { get { return m_Components.Where( p => p.IsActive() ); } }
@@ -25,6 +28,15 @@ public class InspectorView : MonoBehaviour
         m_rtcListener.RectTransformChanged += OnViewportRectTransformChanged;
         HierarchyView.AddSelectionListener( OnSelectionChanged );
         m_Components = GetComponentsInChildren<ComponentEditor>();
+        AspectManager.OnChanged += index =>
+        {
+            OnSelectionChanged(null, new SelectionChangedArgs(new object[] { }, new object[] { }));
+        };
+    }
+
+    private void Start()
+    {
+        HideAllPanels();
     }
 
     public static IEnumerable<T> GetSelectedComponents<T>() where T : BaseComponent
@@ -36,10 +48,7 @@ public class InspectorView : MonoBehaviour
     {
         SelectedItems = e.NewItems.Select( o => ( (GameObject) o ).GetComponent<CUIObject>() ).Where( p => p != null ).ToList();
         SelectedItem = SelectedItems.Count > 0 ? SelectedItems.Last() : default( CUIObject );
-        foreach (var component in m_Components)
-        {
-            component.OnItemsSelected( SelectedItems );
-        }
+        
         if (e.NewItems == null || e.NewItems.Length == 0)
         {
             HideAllPanels();
@@ -47,6 +56,15 @@ public class InspectorView : MonoBehaviour
         else
         {
             ShowAllPanels();
+        }
+        if (SelectedItem != null)
+        {
+            m_NameField.SetValue( SelectedItem.Name );
+            m_FadeOutField.SetValue( SelectedItem.FadeOut );
+        }
+        foreach (var component in m_Components)
+        {
+            component.OnItemsSelected( SelectedItems );
         }
     }
 
@@ -62,11 +80,11 @@ public class InspectorView : MonoBehaviour
             panel.gameObject.SetActive( false );
     }
 
-    public void OnNameChanged( object name )
+    public void OnNameChanged( object newName )
     {
-        foreach (var item in HierarchyView.GetSelectedItems())
+        foreach (var item in CUIObject.Selection)
         {
-            HierarchyView.ChangeName( item, name.ToString() );
+            item.ChangeName(newName.ToString());
         }
     }
 

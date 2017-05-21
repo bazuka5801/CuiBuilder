@@ -17,4 +17,8 @@ public static class FileHelper
         return tex;
     }
 
+    public static void Save( string filePath, string data )
+    {
+        File.WriteAllText(filePath, data);
+    }
 }

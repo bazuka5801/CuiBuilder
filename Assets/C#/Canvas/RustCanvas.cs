@@ -34,11 +34,4 @@ public class RustCanvas : MonoBehaviour, IEventSystemHandler
     {
         return new Vector2( GetMousePos().x / canvas.rect.size.x, GetMousePos().y / canvas.rect.size.y );
     }
-
-    private void OnGUI()
-    {
-        GUILayout.Label( "MOUSE ANCHOR: " + RustCanvas.GetMouseAnchor().ToString( "F3" ) );
-    }
-
-
 }
