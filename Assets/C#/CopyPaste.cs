@@ -22,6 +22,7 @@ public class CopyPaste : MonoBehaviour {
             var pixelComponent = element.Components.OfType<RectPixelComponent>().FirstOrDefault();
             element.Components.Remove(pixelComponent);
             cui.Load(element);
+            element.Components.Add( pixelComponent );
             var rTransform = cui.GetComponent<RectTransformComponent>();
             rTransform.SetPixelLocalPosition(pixelComponent.Position);
             rTransform.SetPixelSize( pixelComponent.Size);

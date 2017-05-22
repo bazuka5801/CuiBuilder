@@ -1141,11 +1141,6 @@ namespace Battlehub.UIControls
                 }
             }
 
-            if (Input.GetKeyDown(RemoveKey))
-            {
-                RemoveSelectedItems();
-            }
-
             if (Input.GetKeyDown(SelectAllKey) && Input.GetKey(RangeselectKey))
             {
                 SelectedItems = m_items;

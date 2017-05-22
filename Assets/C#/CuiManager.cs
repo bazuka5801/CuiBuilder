@@ -21,9 +21,9 @@ public class CuiManager : MonoBehaviour
         if (Input.GetKeyDown( KeyCode.X ))
         {
             var obj = CreateInternal();
-            var rTransform = obj.GetComponent<RectTransform>();
-            rTransform.SetRect( new Vector2( 0.3f, 0.2f ), new Vector2( 0.4f, 0.3f ) );
-            rTransform.SetSizePixel( new Vector2( 100, 100 ) );
+            var rTransform = obj.GetComponent<RectTransformComponent>();
+            rTransform.SetPixelLocalPosition( new Vector2( 100, 100 ));
+            rTransform.SetPixelSize( new Vector2( 100, 100 ) );
         }
     }
 

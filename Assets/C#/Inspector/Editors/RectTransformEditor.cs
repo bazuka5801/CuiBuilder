@@ -46,23 +46,22 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         Dictionary<GameObject, Vector2> offsets = new Dictionary<GameObject, Vector2>();
 
         var selected = m_SelectedTransforms.Where( p => p != m_SelectedTransform ).ToList();
-
         var rootComponent = GetTransformComponent( m_SelectedTransform.gameObject );
-        var centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin ) );
+        var centerPoint = m_SelectedTransform.GetParent().GetWorldPoint( Vector2Ex.Parse( rootComponent.AnchorMin ) );
         foreach (var rTransform in selected)
         {
             var anchorMin = Vector2Ex.Parse( GetTransformComponent( rTransform.gameObject ).AnchorMin );
-            offsets[ rTransform.gameObject ] = rTransform.GetPivotPositionWorld( anchorMin ) - centerPoint;
+            offsets[ rTransform.gameObject ] = rTransform.GetParent().GetWorldPoint( anchorMin ) - centerPoint;
         }
 
         base.OnFieldChanged( "anchormin", anchor );
 
-        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMin ) );
+        centerPoint = m_SelectedTransform.GetParent().GetWorldPoint( Vector2Ex.Parse( rootComponent.AnchorMin ) );
 
         foreach (var rTransform in selected)
         {
             var anchorMin = centerPoint + offsets[ rTransform.gameObject ];
-            GetTransformComponent( rTransform.gameObject ).AnchorMin = Vector2Ex.ToString( anchorMin );
+            GetTransformComponent( rTransform.gameObject ).AnchorMin =Vector2Ex.ToString(rTransform.GetParent().GetLocalPoint(anchorMin));
             rTransform.SetPositionAnchorWorld( anchorMin );
         }
     }
@@ -81,23 +80,24 @@ public class RectTransformEditor : ComponentEditor<RectTransformComponent, CuiRe
         var selected = m_SelectedTransforms.Where( p => p != m_SelectedTransform ).ToList();
 
         var rootComponent = GetTransformComponent( m_SelectedTransform.gameObject );
-        var centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMax ) );
+        var centerPoint = m_SelectedTransform.GetParent().GetWorldPoint( Vector2Ex.Parse( rootComponent.AnchorMax ) );
         foreach (var rTransform in selected)
         {
             var anchorMax = Vector2Ex.Parse( GetTransformComponent( rTransform.gameObject ).AnchorMax );
-            offsets[ rTransform.gameObject ] = rTransform.GetPivotPositionWorld( anchorMax ) - centerPoint;
+            offsets[ rTransform.gameObject ] = rTransform.GetParent().GetWorldPoint( anchorMax ) - centerPoint;
         }
 
         base.OnFieldChanged( "anchormax", anchor );
 
-        centerPoint = m_SelectedTransform.GetPivotPositionWorld( Vector2Ex.Parse( rootComponent.AnchorMax ) );
+        centerPoint = m_SelectedTransform.GetParent().GetWorldPoint( Vector2Ex.Parse( rootComponent.AnchorMax ) );
 
         foreach (var rTransform in selected)
         {
             var point = centerPoint + offsets[ rTransform.gameObject ];
             var anchorMax = point;
-            GetTransformComponent( rTransform.gameObject ).AnchorMax = Vector2Ex.ToString( anchorMax );
-            rTransform.SetRectWorld( rTransform.anchorMin, anchorMax );
+            GetTransformComponent(rTransform.gameObject).AnchorMax =
+                Vector2Ex.ToString(rTransform.GetParent().GetLocalPoint(anchorMax));
+            rTransform.SetRectWorld( rTransform.GetParent().GetWorldPoint(rTransform.anchorMin), anchorMax );
         }
     }
 

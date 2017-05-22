@@ -232,7 +232,7 @@ public static class RustCanvasEx
 
     public static Vector2 GetPivotPositionWorld( this RectTransform transform, Vector2 pivot )
     {
-        return transform.GetParent().GetWorldPoint( pivot );
+        return transform.GetParent().GetWorldPoint( transform.anchorMin+Vector2.Scale( transform.GetSizeLocal(),pivot) );
     }
 
     #endregion
