@@ -93,7 +93,7 @@ public class HierarchyView : MonoBehaviour
     {
         if (obj.transform.parent == null) return;
         var parent = obj.transform.parent.gameObject;
-        m_Instance.TreeView.RemoveChild(parent,obj, (parent.transform.childCount-1) == obj.transform.GetSiblingIndex());
+        m_Instance.TreeView.RemoveChild(parent,obj, parent.transform.childCount == 1);
     }
 
     private void OnItemBeginDrop( object sender, ItemDropCancelArgs e )
