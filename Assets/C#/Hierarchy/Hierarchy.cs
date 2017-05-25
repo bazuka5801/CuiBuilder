@@ -5,10 +5,26 @@ using UnityEngine.EventSystems;
 
 public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISelectHandler
 {
+    public delegate void OnChildrenEvent(Hierarchy item);
 
     public static Dictionary<GameObject, Hierarchy> Lookup = new Dictionary<GameObject, Hierarchy>();
-    public List<Hierarchy> Children = new List<Hierarchy>();
+
+    private readonly List<Hierarchy> Children = new List<Hierarchy>();
+
+    public event OnChildrenEvent OnChildAdded;
+    public event OnChildrenEvent OnChildRemoved;
+
     [SerializeField] private Hierarchy parent;
+
+    public List<Hierarchy> GetChildren()
+    {
+        return Children.ToList();
+    }
+
+    public int GetChildrenCount()
+    {
+        return Children.Count;
+    }
 
     public static List<Hierarchy> Selection { get { return HierarchyView.GetSelectedItems().Select( o => Lookup[ o ] ).ToList(); } }
 
@@ -24,25 +40,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
 
     public static Hierarchy FindByName(string name)
     {
-        foreach (var root in HierarchyView.GetRoot())
-        {
-            var res = FindRecursive(name, Lookup[root]);
-            if (res != null) return res;
-        }
-        return null;
-    }
-
-    private static Hierarchy FindRecursive(string name, Hierarchy start)
-    {
-        if (start.Children.Count == 0) return null;
-
-        foreach (var child in start.Children)
-        {
-            if (child.name == name) return child;
-            var res = FindRecursive(name, child);
-            if (res != null) return res;
-        }
-        return null;
+        return Lookup.Values.LastOrDefault(p => p.name == name);
     }
 
     private void Init()
@@ -53,16 +51,42 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
             {
                 var child = Lookup[ childT.gameObject ];
                 child.parent = this;
-                Children.Add( child );
+                AddChild( child );
             }
         }
     }
 
+    public void AddChild(Hierarchy child)
+    {
+        if (!Children.Contains( child ))
+        {
+            Children.Add( child );
+            OnChildrenUpdated();
+            if (OnChildAdded != null) OnChildAdded.Invoke( child );
+        }
+
+    }
+
+    public void RemoveChild(Hierarchy child)
+    {
+        if (Children.Contains(child))
+        {
+            Children.Remove(child);
+            OnChildrenUpdated();
+            if (OnChildRemoved != null) OnChildRemoved.Invoke(child);
+        }
+    }
+
+    private void OnChildrenUpdated()
+    {
+        Children.Sort( ( x, y ) => x.transform.GetSiblingIndex().CompareTo( y.transform.GetSiblingIndex() ) );
+    }
 
     public void OnPoolEnter()
     {
         Lookup.Remove( gameObject );
         HierarchyView.Remove(gameObject);
+        if (parent != null) parent.RemoveChild(this);
         Children.Clear();
         parent = null;
     }
@@ -78,7 +102,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
         var rTransform = (RectTransform) transform;
         if (parent != null)
         {
-            parent.Children.Remove( this );
+            parent.RemoveChild( this );
 
             var position = rTransform.GetParent().GetWorldPoint( rTransform.anchorMin );
             var size = rTransform.GetSizeWorld();
@@ -91,7 +115,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
             transform.SetParent( newParent.transform, false );
         }
         parent = newParent;
-        parent.Children.Add( this );
+        parent.AddChild( this );
         if (!HierarchyView.IsCreated(gameObject))
             HierarchyView.AddChild( gameObject );
         HierarchyView.ChangeParent( parent.gameObject, gameObject );

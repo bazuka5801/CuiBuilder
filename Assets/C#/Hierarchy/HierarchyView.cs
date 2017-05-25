@@ -246,7 +246,7 @@ public class HierarchyView : MonoBehaviour
             if (dataItem.name != "TreeView")
             {
                 e.CanDrag = e.CanEdit = !Root.Contains( dataItem );
-                e.HasChildren = Hierarchy.Lookup[ dataItem ].Children.Count > 0;
+                e.HasChildren = Hierarchy.Lookup[ dataItem ].GetChildrenCount() > 0;
             }
         }
     }

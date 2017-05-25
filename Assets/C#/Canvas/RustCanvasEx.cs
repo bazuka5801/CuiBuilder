@@ -166,6 +166,11 @@ public static class RustCanvasEx
         return ( ( Vector2.one).Div(Vector2.Scale( ScreenVec, ( (RectTransform) transform.parent ).GetSizeWorld()) ) );
     }
 
+
+    public static Vector2 GetPixelShiftLocalForChild( this RectTransform transform )
+    {
+        return ( ( Vector2.one ).Div( Vector2.Scale( ScreenVec, ( transform ).GetSizeWorld() ) ) );
+    }
     #endregion
 
     #endregion

@@ -23,6 +23,9 @@ public class CollectionManager : MonoBehaviour
     {
         AspectManager.OnChanged += OnAspectChanged;
         AspectManager.OnPreChange += OnPreAspectChange;
+
+        CuiHelper.RegisterComponent("LayoutGroup", typeof(CuiLayoutGroupComponent));
+        CuiHelper.RegisterComponent("LayoutElement", typeof(CuiLayoutElementComponent));
     }
 
     private void OnPreAspectChange( int aspectIndex )

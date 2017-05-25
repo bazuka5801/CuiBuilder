@@ -3,7 +3,10 @@ using UnityEngine;
 
 public sealed class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
 {
+    public delegate void OnRectTransformChangedEvent();
     private RectTransform m_Transform;
+
+    public event OnRectTransformChangedEvent OnChanged;
 
     protected override void Awake()
     {
@@ -15,6 +18,18 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     {
         OnAnchorMinChanged(component.AnchorMin);
         OnAnchorMaxChanged(component.AnchorMax);
+    }
+
+    public void SetRect(Vector2 anchorMin, Vector2 anchorMax)
+    {
+        OnAnchorMinChanged(anchorMin);
+        OnAnchorMaxChanged(anchorMax);
+    }
+
+    public void SetOffset(Vector2 offsetMin, Vector2 offsetMax)
+    {
+        OnOffsetMinChanged(offsetMin);
+        OnOffsetMaxChanged(offsetMax);
     }
 
     [CuiField( "anchormin" )]
@@ -38,6 +53,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
             m_Transform.SetPositionAnchorLocal( new Vector2( 0.1f, 0.1f ) );
             CuiComponent.AnchorMin = value.ToString();
         }
+        if (OnChanged != null) OnChanged.Invoke();
     }
 
     [CuiField( "anchormax" )]
@@ -61,6 +77,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
             m_Transform.SetSizePixel( new Vector2( 100f, 100f ) );
             CuiComponent.AnchorMax = value.ToString();
         }
+        if (OnChanged != null) OnChanged.Invoke();
     }
 
     [CuiField( "position" )]
@@ -73,6 +90,8 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
 
             CuiComponent.AnchorMin = string.Format( "{0} {1}", m_Transform.anchorMin.x, m_Transform.anchorMin.y );
             CuiComponent.AnchorMax = string.Format( "{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y );
+
+            if (OnChanged != null) OnChanged.Invoke();
         }
     }
     [CuiField( "size" )]
@@ -84,6 +103,8 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
             m_Transform.SetSizePixel( (Vector2) value );
 
             CuiComponent.AnchorMax = string.Format( "{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y );
+
+            if (OnChanged != null) OnChanged.Invoke();
         }
     }
 

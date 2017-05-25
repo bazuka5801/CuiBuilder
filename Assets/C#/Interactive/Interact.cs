@@ -63,7 +63,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         }
         if (Input.GetKeyDown(KeyCode.B) && Input.GetKey(KeyCode.LeftControl))
         {
-            transform.SetPositionAnchorLocal(new Vector2(0.5f,0.5f)-transform.GetSizeWorld()*0.5f); TransformEditorUpdate();
+            transform.SetPositionAnchorLocal(new Vector2(0.5f,0.5f)-transform.GetSizeLocal()*0.5f); TransformEditorUpdate();
         }
     }
 
