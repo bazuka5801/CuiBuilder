@@ -26,6 +26,13 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
         GetComponent<RectTransformComponent>().OnChanged += UpdateChildren;
     }
 
+    private void OnDestroy()
+    {
+        GetComponent<RectTransformComponent>().OnChanged -= UpdateChildren;
+        m_Hierarchy.OnChildAdded -= OnChildAdded;
+        m_Hierarchy.OnChildRemoved -= OnChildRemoved;
+    }
+
 
     private void OnChildAdded( Hierarchy item )
     {
@@ -36,8 +43,8 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
 
     private void OnChildRemoved( Hierarchy item )
     {
-        item.GetComponent<CUIObject>().OnComponentStateChanged(typeof( CuiLayoutElementComponent ), false);
         item.GetComponent<RectTransformComponent>().OnChanged -= UpdateLists;
+        item.GetComponent<CUIObject>().OnComponentStateChanged(typeof( CuiLayoutElementComponent ), false);
         OnChildrenChanged();
     }
 

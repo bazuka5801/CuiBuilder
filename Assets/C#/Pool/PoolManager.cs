@@ -8,65 +8,82 @@ public interface IPoolHandler
     void OnPoolLeave();
 }
 
-[System.Serializable]
-public class Pool
+public enum PrefabType
 {
-
+    Cui,
+    Trigger
 }
 
 public class PoolManager : MonoBehaviour
 {
+    [System.Serializable]
+    public class Pool
+    {
+        public GameObject Prefab;
+        public int StartCount = 50;
 
-    [SerializeField] private GameObject Prefab;
-    [SerializeField] private int StartCount;
-
-    [SerializeField] private List<GameObject> Collection = new List<GameObject>();
+        public List<GameObject> Collection = new List<GameObject>();
+    }
 
     private static PoolManager m_Instance;
+    [SerializeField] private List<Pool> m_Pools;
 
     private void Awake()
     {
         m_Instance = this;
-        for (int j = 0; j < StartCount; j++)
-            Create();
+        for (var index = 0; index < m_Pools.Count; index++)
+        {
+            var pool = m_Pools[ index ];
+            for (int j = 0; j < pool.StartCount; j++)
+                Create( (PrefabType) index );
+        }
     }
 
-    public GameObject Get()
+    public static GameObject Get( PrefabType type )
     {
-        if (Collection.Count > 0)
+        var pool = m_Instance.GetPool( type );
+        if (pool.Collection.Count > 0)
         {
-            var obj = Collection[ 0 ];
-            Collection.RemoveAt( 0 );
-            OnPoolLeave( obj );
+            var obj = pool.Collection[ 0 ];
+            pool.Collection.RemoveAt( 0 );
+            m_Instance.OnPoolLeave( type, obj );
             return obj;
         }
-        Create();
-        return Get();
+        m_Instance.Create( type );
+        return Get( type );
     }
 
-    private void Create()
+    private void Create( PrefabType type )
     {
-        var obj = Object.Instantiate( Prefab );
-        OnPoolEnter( obj );
+        var pool = GetPool( type );
+        var obj = Instantiate( pool.Prefab );
+        OnPoolEnter( type, obj );
     }
 
-    public static void Release( GameObject obj )
+    private Pool GetPool( PrefabType type )
     {
-        m_Instance.OnPoolEnter( obj );
+        return m_Pools[ (int) type ];
     }
 
-    private void OnPoolEnter( GameObject obj )
+    public static void Release( PrefabType type, GameObject obj )
     {
+        m_Instance.OnPoolEnter( type, obj );
+    }
+
+    private void OnPoolEnter( PrefabType type, GameObject obj )
+    {
+        var pool = GetPool( type );
         foreach (var handler in GetHandlers( obj ))
             handler.OnPoolEnter();
         obj.SetActive( false );
         obj.transform.SetParent( transform, false );
-        Collection.Add( obj );
+        pool.Collection.Add( obj );
     }
 
-    private void OnPoolLeave( GameObject obj )
+    private void OnPoolLeave( PrefabType type, GameObject obj )
     {
-        Collection.Remove( obj );
+        var pool = GetPool( type );
+        pool.Collection.Remove( obj );
         obj.SetActive( true );
         foreach (var handler in GetHandlers( obj ))
             handler.OnPoolLeave();

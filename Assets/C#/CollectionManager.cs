@@ -24,25 +24,25 @@ public class CollectionManager : MonoBehaviour
         AspectManager.OnChanged += OnAspectChanged;
         AspectManager.OnPreChange += OnPreAspectChange;
 
-        CuiHelper.RegisterComponent("LayoutGroup", typeof(CuiLayoutGroupComponent));
-        CuiHelper.RegisterComponent("LayoutElement", typeof(CuiLayoutElementComponent));
+        CuiHelper.RegisterComponent( "LayoutGroup", typeof( CuiLayoutGroupComponent ) );
+        CuiHelper.RegisterComponent( "LayoutElement", typeof( CuiLayoutElementComponent ) );
     }
 
     private void OnPreAspectChange( int aspectIndex )
     {
-        Save(aspectIndex);
+        Save( aspectIndex );
     }
 
     private IEnumerator Start()
     {
         yield return new WaitForFixedUpdate();
         LoadFromSave();
-        m_Dropdown.onValueChanged.AddListener(functionIndex =>
-        {
-            if (m_FunctionIndex == functionIndex) return;
-            Save( AspectManager.AspectIndex );
-            Change(functionIndex, AspectManager.AspectIndex);
-        });
+        m_Dropdown.onValueChanged.AddListener( functionIndex =>
+         {
+             if (m_FunctionIndex == functionIndex) return;
+             Save( AspectManager.AspectIndex );
+             Change( functionIndex, AspectManager.AspectIndex );
+         } );
     }
 
 
@@ -73,7 +73,7 @@ public class CollectionManager : MonoBehaviour
             CuiManager.Create().Load( element );
         }
     }
-    private void SaveCurrent(int aspectIndex)
+    private void SaveCurrent( int aspectIndex )
     {
         m_Current.Set( aspectIndex, GetCurrentCui().ToJson() );
     }
@@ -112,7 +112,7 @@ public class CollectionManager : MonoBehaviour
     public static CuiElementContainer GetSelectedCui()
     {
         var selected = CUIObject.Selection;
-        return new CuiElementContainer( HierarchyView.GetCurrent().Where(selected.Contains).Select( p => p.GetCuiElement() ).ToList() );
+        return new CuiElementContainer( HierarchyView.GetCurrent().Where( selected.Contains ).Select( p => p.GetCuiElement() ).ToList() );
     }
 
     private static void UnloadCurrent()
@@ -121,18 +121,18 @@ public class CollectionManager : MonoBehaviour
         objs.Reverse();
         foreach (var obj in objs)
         {
-            PoolManager.Release( obj.gameObject );
+            PoolManager.Release( PrefabType.Cui, obj.gameObject );
         }
     }
 
-    public void Save(int aspectIndex)
+    public void Save( int aspectIndex )
     {
         SaveCurrent( aspectIndex );
         FileHelper.Save( "save.json", CuiHelper.ToJson( Functions ) );
     }
     public void Export()
     {
-        Save(AspectManager.AspectIndex);
+        Save( AspectManager.AspectIndex );
         var production = Functions.ToDictionary( p => p.Key, p => p.Value.GetProduction() );
         FileHelper.Save( "save.json", CuiHelper.ToJson( production ) );
     }

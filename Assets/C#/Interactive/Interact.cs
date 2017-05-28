@@ -131,21 +131,26 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
             for (float k = 0; k <= 1f; k += 0.5f)
                 triggersEventArgs.Add( new Vector2( k, j ) );
 
-        m_TriggerContainer = transform.CreateChild( "_triggers" );
+        //m_TriggerContainer = transform.CreateChild( "_triggers" );
+        m_TriggerContainer = PoolManager.Get(PrefabType.Trigger);
         RectTransform tgrTransform = (RectTransform) m_TriggerContainer.transform;
+        tgrTransform.SetParent( transform, false );
         tgrTransform.SetRect( Vector2.zero, Vector2.one );
         tgrTransform.offsetMin = tgrTransform.offsetMax = Vector2.zero;
 
-        foreach (var anchor in triggersEventArgs)
+        var eTriggers = m_TriggerContainer.GetComponentsInChildren<EventTrigger>();
+        for (var index = 0; index < triggersEventArgs.Count; index++)
         {
-            AddDragHandlers( CreateTrigger( tgrTransform, anchor ), anchor );
+            var anchor = triggersEventArgs[index];
+            AddDragHandlers( eTriggers[index], anchor);
         }
     }
 
     private void DestroyTriggers()
     {
         if (m_TriggerContainer == null) return;
-        Destroy( m_TriggerContainer );
+        PoolManager.Release(PrefabType.Trigger, m_TriggerContainer);
+        m_TriggerContainer = null;
     }
 
     private void AddDragHandlers( EventTrigger trigger, Vector2 anchor )
@@ -159,19 +164,19 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         }
     }
 
-    private EventTrigger CreateTrigger( RectTransform tgrContainer, Vector2 anchor )
-    {
-        var triggerObj = tgrContainer.CreateChild( anchor.ToString( "F1" ) );
-        RectTransform tgrTransform = (RectTransform) triggerObj.transform;
+    //private EventTrigger CreateTrigger( RectTransform tgrContainer, Vector2 anchor )
+    //{
+    //    var triggerObj = tgrContainer.CreateChild( anchor.ToString( "F1" ) );
+    //    RectTransform tgrTransform = (RectTransform) triggerObj.transform;
 
-        tgrTransform.SetRect( anchor, anchor );
-        tgrTransform.sizeDelta = triggerSize;
+    //    tgrTransform.SetRect( anchor, anchor );
+    //    tgrTransform.sizeDelta = triggerSize;
 
-        var img = triggerObj.AddComponent<Image>();
-        img.color = triggerColor;
-        img.sprite = triggerSprite;
-        return triggerObj.AddComponent<EventTrigger>();
-    }
+    //    var img = triggerObj.AddComponent<Image>();
+    //    img.color = triggerColor;
+    //    img.sprite = triggerSprite;
+    //    return triggerObj.AddComponent<EventTrigger>();
+    //}
 
     public void OnPoolEnter()
     {

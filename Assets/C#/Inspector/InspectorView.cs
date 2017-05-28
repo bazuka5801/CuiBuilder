@@ -47,7 +47,6 @@ public class InspectorView : MonoBehaviour
     private void OnSelectionChanged( object sender, SelectionChangedArgs e )
     {
         SelectedItems = e.NewItems.Select( o => ( (GameObject) o ).GetComponent<CUIObject>() ).Where( p => p != null ).ToList();
-        Debug.Log(SelectedItems.Count);
         SelectedItem = SelectedItems.Count > 0 ? SelectedItems.Last() : default( CUIObject );
         
         if (e.NewItems == null || e.NewItems.Length == 0)

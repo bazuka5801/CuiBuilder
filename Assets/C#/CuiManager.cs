@@ -7,7 +7,6 @@ using System.Reflection;
 
 public class CuiManager : MonoBehaviour
 {
-    [SerializeField] private PoolManager m_Pool;
     [SerializeField] private GameObject m_RootDefault;
     private static CuiManager m_Instance;
 
@@ -22,24 +21,24 @@ public class CuiManager : MonoBehaviour
         {
             var obj = CreateInternal();
             var rTransform = obj.GetComponent<RectTransformComponent>();
-            rTransform.SetPixelLocalPosition( new Vector2( 100, 100 ));
+            rTransform.SetPixelLocalPosition( new Vector2( 100, 100 ) );
             rTransform.SetPixelSize( new Vector2( 100, 100 ) );
         }
     }
 
     private CUIObject CreateInternal()
     {
-        var obj = m_Pool.Get();
+        var obj = PoolManager.Get( PrefabType.Cui );
         obj.transform.SetParent( m_RootDefault.transform, false );
         Hierarchy.Lookup[ obj ].SetParent( Hierarchy.Lookup[ m_RootDefault ] );
-        return CUIObject.Lookup[obj];
+        return CUIObject.Lookup[ obj ];
     }
 
     public static CUIObject Create()
     {
         return m_Instance.CreateInternal();
     }
-    
+
     public static Dictionary<string, MethodInfo> GetCuiFieldHandlers( Type type )
     {
         return type

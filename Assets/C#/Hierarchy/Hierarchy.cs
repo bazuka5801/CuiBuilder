@@ -104,11 +104,11 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
         var rTransform = (RectTransform) transform;
         if (parent != null)
         {
-            parent.RemoveChild( this );
 
             var position = rTransform.GetParent().GetWorldPoint( rTransform.anchorMin );
             var size = rTransform.GetSizeWorld();
             transform.SetParent( newParent.transform, false );
+            parent.RemoveChild( this );
             rTransform.SetPositionAnchorLocal( rTransform.GetParent().GetLocalPoint( position ) );
             rTransform.SetSizeWorld( size );
         }

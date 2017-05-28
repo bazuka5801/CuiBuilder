@@ -212,7 +212,7 @@ public class HierarchyView : MonoBehaviour
             GameObject go = (GameObject) e.Items[ i ];
             if (go != null)
             {
-                PoolManager.Release( go );
+                PoolManager.Release( PrefabType.Cui, go );
             }
         }
     }

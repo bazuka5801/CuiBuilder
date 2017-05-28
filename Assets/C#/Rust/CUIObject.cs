@@ -54,7 +54,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler
         {
             if (component.GetType() != typeof(RectTransformComponent))
             {
-                DestroyImmediate(component);
+                DestroyImmediate( component);
             }
         }
         Components.RemoveAll( p => p.GetType() != typeof( CuiRectTransformComponent ) );
@@ -137,7 +137,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler
     {
         if (Input.GetKeyDown( KeyCode.C ))
         {
-            Debug.Log( string.Join( ", ", HierarchyView.GetCurrent().Select( p => p.Name ).ToArray() ) );
+            //Debug.Log( string.Join( ", ", HierarchyView.GetCurrent().Select( p => p.Name ).ToArray() ) );
             //Debug.Log( CuiHelper.ToJson( new CuiElementContainer() { GetCuiElement() } ) );
         }
     }
