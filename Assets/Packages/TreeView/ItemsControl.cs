@@ -644,11 +644,11 @@ namespace Battlehub.UIControls
             get { return m_selectedItems; }
             set
             {
-                /*if (m_selectionLocked)
+                if (m_selectionLocked)
                 {
                     return;
                 }
-                m_selectionLocked = true;*/
+                m_selectionLocked = true;
 
                 IList oldSelectedItems = m_selectedItems;
                 if (value != null)
@@ -658,11 +658,20 @@ namespace Battlehub.UIControls
 
                     for (int i = m_selectedItems.Count - 1; i >= 0; --i)
                     {
+                        try
+                        {
                         object item = m_selectedItems[i];
                         ItemContainer container = GetItemContainer(item);
                         if (container != null)
                         {
                             container.IsSelected = true;
+                            }
+
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine( e );
+                            throw;
                         }
                     }
                     if (m_selectedItems.Count == 0)
@@ -708,7 +717,7 @@ namespace Battlehub.UIControls
                     SelectionChanged(this, new SelectionChangedArgs(unselectedItems.ToArray(), selectedItems));
                 }
 
-                //m_selectionLocked = false;
+                m_selectionLocked = false;
             }
         }
 

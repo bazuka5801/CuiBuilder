@@ -31,6 +31,11 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
         GetComponent<RectTransformComponent>().OnChanged -= UpdateChildren;
         m_Hierarchy.OnChildAdded -= OnChildAdded;
         m_Hierarchy.OnChildRemoved -= OnChildRemoved;
+        foreach (var child in m_Children)
+        {
+            child.GetComponent<RectTransformComponent>().OnChanged -= UpdateLists;
+            child.GetComponent<CUIObject>().OnComponentStateChanged( typeof( CuiLayoutElementComponent ), false );
+        }
     }
 
 
@@ -52,7 +57,13 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
     {
         m_Children = m_Hierarchy.GetChildren().Select( p => p.GetComponent<RectTransformComponent>() ).Where(p=>p).ToList();
 
-        m_Weights = m_Children.Select( p => p.GetComponent<LayoutElementComponent>() ).Select( p => p == null ? 1 : p.CuiComponent.Weight ).ToList();
+        m_Weights = m_Children.Select(p =>
+        {
+            var comp = p.GetComponent<LayoutElementComponent>();
+            if (comp) return comp;
+            CUIObject.Lookup[ p.gameObject ].OnComponentStateChanged( typeof( CuiLayoutElementComponent ), true );
+            return p.GetComponent<LayoutElementComponent>();
+        } ).Select( p => p == null ? 1 : p.CuiComponent.Weight ).ToList();
         if (m_Children.Count != m_Weights.Count) return;
         UpdateChildren();
     }
