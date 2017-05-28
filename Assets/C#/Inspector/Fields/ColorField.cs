@@ -6,13 +6,14 @@ public class ColorField : InspectorField
 {
 
     [SerializeField] private InputField m_InputField;
-
+    private bool lockedObject = false;
     private void Awake()
     {
         GetComponent<ColorPicker>().CurrentColor = Color.white;
         m_InputField.onEndEdit.AddListener( ( s ) =>
-         {
-             Color32 color32;
+        {
+            if (lockedObject) return;
+            Color32 color32;
              if (HexColorField.HexToColor( s, out color32 ))
              {
                  Color color = color32;
@@ -22,7 +23,8 @@ public class ColorField : InspectorField
              onChanged.Invoke( s );
          } );
         GetComponent<ColorPicker>().onValueChanged.AddListener( color =>
-         {
+        {
+            if (lockedObject) return;
              onChanged.Invoke( string.Format( "{0} {1} {2} {3}", color.r, color.g, color.b, color.a ) );
          } );
     }
@@ -48,6 +50,7 @@ public class ColorField : InspectorField
     /// <param name="value">text</param>
     public override void SetValue( object value )
     {
+        lockedObject = true;
         if (value.ToString().Split().Length == 4)
         {
             value = ColorEx.Parse( value.ToString() ).ToRGBHex();
@@ -57,8 +60,10 @@ public class ColorField : InspectorField
         {
             Color color = color32;
             GetComponent<ColorPicker>().CurrentColor = color;
+            lockedObject = false;
             return;
         }
         m_InputField.text = value.ToString();
+        lockedObject = false;
     }
 }
