@@ -8,7 +8,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     public delegate void OnChildrenEvent(Hierarchy item);
 
     public static Dictionary<GameObject, Hierarchy> Lookup = new Dictionary<GameObject, Hierarchy>();
-
+    private static List<Hierarchy> history = new List<Hierarchy>();
     private readonly List<Hierarchy> Children = new List<Hierarchy>();
 
     public event OnChildrenEvent OnChildAdded;
@@ -40,7 +40,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
 
     public static Hierarchy FindByName(string name)
     {
-        return Lookup.Values.LastOrDefault(p => p.name == name);
+        return history.LastOrDefault(p => p.name == name);
     }
 
     private void Init()
@@ -85,6 +85,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     public void OnPoolEnter()
     {
         Lookup.Remove( gameObject );
+        history.Remove( this );
         HierarchyView.Remove(gameObject);
         if (parent != null) parent.RemoveChild(this);
         Children.Clear();
@@ -94,6 +95,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     public void OnPoolLeave()
     {
         Lookup[ gameObject ] = this;
+        history.Add(this);
         Init();
     }
 
@@ -123,7 +125,7 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
 
     public void SetParent(string parentName)
     {
-        Hierarchy parent = Lookup.Values.FirstOrDefault(hierarchy => hierarchy.name == parentName);
+        Hierarchy parent = history.LastOrDefault(hierarchy => hierarchy.name == parentName);
         if (parent != null)
         {
             SetParent(parent);
