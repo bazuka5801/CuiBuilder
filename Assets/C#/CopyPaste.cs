@@ -11,7 +11,10 @@ public class CopyPaste : MonoBehaviour {
     public void Copy()
     {
         clipboardBuffer = CollectionManager.GetSelectedCui();
-        clipboardBuffer.ForEach(AddRectPixelComponent);
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            clipboardBuffer.ForEach(AddRectPixelComponent);
+        }
     }
 
     public void Paste()
@@ -20,12 +23,20 @@ public class CopyPaste : MonoBehaviour {
         {
             var cui = CuiManager.Create();
             var pixelComponent = element.Components.OfType<RectPixelComponent>().FirstOrDefault();
-            element.Components.Remove(pixelComponent);
+            if (pixelComponent != null)
+            {
+                element.Components.Remove(pixelComponent);
+            }
+
             cui.Load(element);
-            element.Components.Add( pixelComponent );
-            var rTransform = cui.GetComponent<RectTransformComponent>();
-            rTransform.SetPixelLocalPosition(pixelComponent.Position);
-            rTransform.SetPixelSize( pixelComponent.Size);
+
+            if (pixelComponent != null)
+            {
+                element.Components.Add(pixelComponent);
+                var rTransform = cui.GetComponent<RectTransformComponent>();
+                rTransform.SetPixelLocalPosition(pixelComponent.Position);
+                rTransform.SetPixelSize(pixelComponent.Size);
+            }
         }
     }
 

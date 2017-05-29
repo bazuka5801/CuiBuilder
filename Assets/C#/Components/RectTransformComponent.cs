@@ -44,11 +44,11 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         }
         else
         {
-            var vec = Vector2Ex.Parse( value.ToString() );
-            if (vec != Vector2.zero)
+            if (value.ToString().IsVector())
             {
-                OnAnchorMinChanged( vec );
-                return;
+                var vec = Vector2Ex.Parse(value.ToString());
+                    OnAnchorMinChanged(vec);
+                    return;
             }
             m_Transform.SetPositionAnchorLocal( new Vector2( 0.1f, 0.1f ) );
             CuiComponent.AnchorMin = value.ToString();
@@ -68,9 +68,9 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         }
         else
         {
-            var vec = Vector2Ex.Parse( value.ToString() );
-            if (vec != Vector2.zero)
+            if (value.ToString().IsVector())
             {
+                var vec = Vector2Ex.Parse( value.ToString() );
                 OnAnchorMaxChanged( vec );
                 return;
             }

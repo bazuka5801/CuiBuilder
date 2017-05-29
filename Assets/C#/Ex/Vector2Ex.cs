@@ -1,11 +1,23 @@
-﻿namespace UnityEngine
+﻿using System.Linq;
+
+namespace UnityEngine
 {
     public static class Vector2Ex
     {
-        public static Vector2 Parse( string p )
+        public static bool IsVector(this string p)
         {
-            string[] strArrays = p.Split( new char[] { ' ' } );
-            if ((int) strArrays.Length != 2)
+            string[] strArrays = p.Split(' ');
+            if (strArrays.Length != 2) return false;
+            return strArrays.All(z =>
+            {
+                int res;
+                return int.TryParse(z, out res);
+            });
+        }
+        public static Vector2 Parse(string p)
+        {
+            string[] strArrays = p.Split(' ');
+            if (strArrays.Length != 2)
             {
                 return Vector2.zero;
             }
