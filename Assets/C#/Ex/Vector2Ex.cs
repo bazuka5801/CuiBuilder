@@ -10,8 +10,8 @@ namespace UnityEngine
             if (strArrays.Length != 2) return false;
             return strArrays.All(z =>
             {
-                int res;
-                return int.TryParse(z, out res);
+                float res;
+                return float.TryParse(z, out res);
             });
         }
         public static Vector2 Parse(string p)

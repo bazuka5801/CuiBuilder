@@ -89,9 +89,7 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
         {
             var weight = m_Weights[i];
             var child = m_Children[i];
-
-            Vector2 offsetmin = Vector2.zero;
-            Vector2 offsetmax = Vector2.zero;
+            
             switch (CuiComponent.Mode)
             {
                 case LayoutGroupMode.Horizontal:
@@ -106,13 +104,10 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
                 {
                         var anchorMax = new Vector2( 1 - spacingOffset.x, anchorMin + sizes[ i ] );
                         child.SetRect( new Vector2( spacingOffset.x, anchorMin ), anchorMax);
-
-                    //TODO::    
                         break;
                 }
             }
             anchorMin += sizes[i] + spacingOffset[(int)Mode];
-            child.SetOffset(offsetmin, offsetmax);
         }
 
         locker = false;
