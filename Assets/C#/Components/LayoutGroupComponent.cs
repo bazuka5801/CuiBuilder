@@ -13,8 +13,6 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
     private bool locker = false;
     
     private LayoutGroupMode Mode { get { return CuiComponent.Mode; } }
-    // TODO: OnParentChanged (Удалять компонент)
-    // TODO: OnRectTransformChanged (Обновлять размеры элемента)
 
     protected override void Awake()
     {

@@ -1,7 +1,7 @@
 ﻿using Oxide.Game.Rust.Cui;
 using UnityEngine;
 
-public sealed class RectTransformComponent : BaseComponent<CuiRectTransformComponent>
+public sealed class RectTransformComponent : BaseComponent<CuiRectTransformComponent>, IPoolHandler
 {
     public delegate void OnRectTransformChangedEvent();
     private RectTransform m_Transform;
@@ -18,18 +18,14 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     {
         OnAnchorMinChanged(component.AnchorMin);
         OnAnchorMaxChanged(component.AnchorMax);
+        OnOffsetMinChanged( component.OffsetMin );
+        OnOffsetMaxChanged( component.OffsetMax );
     }
 
     public void SetRect(Vector2 anchorMin, Vector2 anchorMax)
     {
         OnAnchorMinChanged(anchorMin);
         OnAnchorMaxChanged(anchorMax);
-    }
-
-    public void SetOffset(Vector2 offsetMin, Vector2 offsetMax)
-    {
-        OnOffsetMinChanged(offsetMin);
-        OnOffsetMaxChanged(offsetMax);
     }
 
     [CuiField( "anchormin" )]
@@ -121,6 +117,12 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         }
         else
         {
+            if (value.ToString().IsVector())
+            {
+                var vec = Vector2Ex.Parse( value.ToString() );
+                OnOffsetMinChanged( vec );
+                return;
+            }
             m_Transform.offsetMin = Vector2.zero;
             CuiComponent.OffsetMin = value.ToString();
         }
@@ -138,6 +140,12 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         }
         else
         {
+            if (value.ToString().IsVector())
+            {
+                var vec = Vector2Ex.Parse( value.ToString() );
+                OnOffsetMaxChanged( vec );
+                return;
+            }
             m_Transform.offsetMax = Vector2.zero;
             CuiComponent.OffsetMax = value.ToString();
         }
@@ -150,5 +158,15 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     public void SetPixelSize( Vector2 pos )
     {
         OnSizeChanged( pos );
+    }
+
+    public void OnPoolEnter()
+    {
+        m_Transform.offsetMin = m_Transform.offsetMax = Vector2.zero;
+    }
+
+    public void OnPoolLeave()
+    {
+
     }
 }
