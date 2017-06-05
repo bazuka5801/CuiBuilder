@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -57,11 +59,18 @@ public class AspectManager : MonoBehaviour
 #if !UNITY_EDITOR
         var size = m_Instance.m_AspectResolutions[ index ];
         Screen.SetResolution( Convert.ToInt32( size[ 0 ] ), Convert.ToInt32( size[ 1 ] ), Screen.fullScreen, Screen.currentResolution.refreshRate );
+        
 #endif
+        StartCoroutine(SetAspectInternal(index));
+    }
+
+    private IEnumerator SetAspectInternal(int index)
+    {
+        yield return new WaitForEndOfFrame();
         BackgroundManager.Instance.SetBackground( GetAspect() );
         if (OnChanged != null)
         {
-            OnChanged.Invoke(index);
+            OnChanged.Invoke( index );
         }
     }
 }

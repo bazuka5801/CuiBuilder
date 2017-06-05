@@ -84,6 +84,10 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
 
     public void OnPoolEnter()
     {
+        foreach (var child in Children.ToList())
+        {
+            PoolManager.Release(PrefabType.Cui, child.gameObject);
+        }
         Lookup.Remove( gameObject );
         history.Remove( this );
         HierarchyView.Remove(gameObject);
