@@ -59,14 +59,14 @@ public class AspectManager : MonoBehaviour
 #if !UNITY_EDITOR
         var size = m_Instance.m_AspectResolutions[ index ];
         Screen.SetResolution( Convert.ToInt32( size[ 0 ] ), Convert.ToInt32( size[ 1 ] ), Screen.fullScreen, Screen.currentResolution.refreshRate );
-        
 #endif
-        StartCoroutine(SetAspectInternal(index));
+        StartCoroutine( SetAspectInternal(index));
     }
 
     private IEnumerator SetAspectInternal(int index)
     {
-        yield return new WaitForEndOfFrame();
+        for (int j = 0; j < 4; j++)
+            yield return new WaitForEndOfFrame();
         BackgroundManager.Instance.SetBackground( GetAspect() );
         if (OnChanged != null)
         {
