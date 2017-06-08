@@ -33,6 +33,7 @@ public sealed class LayoutElementComponent : BaseComponent<CuiLayoutElementCompo
 
 #region Nested type: CuiLayoutElementComponent
 
+[System.Serializable]
 public class CuiLayoutElementComponent : ICuiComponent
 {
     public string Type
@@ -42,6 +43,11 @@ public class CuiLayoutElementComponent : ICuiComponent
 
     [DefaultValue( 1.0f )]
     public float Weight = 1.0f;
+
+    public object Clone()
+    {
+        return this.DeepClone();
+    }
 }
 
 #endregion

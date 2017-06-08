@@ -91,6 +91,8 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
         Lookup.Remove( gameObject );
         history.Remove( this );
         HierarchyView.Remove(gameObject);
+        OnChildAdded = null;
+        OnChildRemoved = null;
         if (parent != null) parent.RemoveChild(this);
         Children.Clear();
         parent = null;

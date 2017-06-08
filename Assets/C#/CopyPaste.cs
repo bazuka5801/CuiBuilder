@@ -50,11 +50,17 @@ public class CopyPaste : MonoBehaviour {
         });
     }
 
+    [System.Serializable]
     private class RectPixelComponent : ICuiComponent
     {
         public string Type { get { return "RectPixel"; } }
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
+
+        public object Clone()
+        {
+            return this.DeepClone();
+        }
     }
     
 }

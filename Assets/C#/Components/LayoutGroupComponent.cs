@@ -145,6 +145,7 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
 
 #region Nested type: CuiLayoutGroupComponent
 
+[System.Serializable]
 public class CuiLayoutGroupComponent : ICuiComponent
 {
     public string Type
@@ -157,6 +158,11 @@ public class CuiLayoutGroupComponent : ICuiComponent
 
     [DefaultValue( 0.0f )]
     public float Spacing = 0.0f;
+
+    public object Clone()
+    {
+        return this.DeepClone();
+    }
 }
 
 #endregion

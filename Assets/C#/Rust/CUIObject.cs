@@ -35,7 +35,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler
         }
         foreach (var component in Components)
         {
-            element.Components.Add( component );
+            element.Components.Add( (ICuiComponent)component.Clone() );
         }
         return element;
     }
