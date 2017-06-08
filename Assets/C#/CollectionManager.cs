@@ -134,7 +134,7 @@ public class CollectionManager : MonoBehaviour
     {
         Save( AspectManager.AspectIndex );
         var production = Functions.ToDictionary( p => p.Key, p => p.Value.GetProduction() );
-        FileHelper.Save( "save.json", CuiHelper.ToJson( production ) );
+        FileHelper.Save( "CuiGenerator.json", CuiHelper.ToJson( production ) );
     }
     private void LoadFromSave()
     {

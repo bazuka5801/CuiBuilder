@@ -163,6 +163,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     public void OnPoolEnter()
     {
         m_Transform.offsetMin = m_Transform.offsetMax = Vector2.zero;
+        OnChanged = null;
     }
 
     public void OnPoolLeave()
