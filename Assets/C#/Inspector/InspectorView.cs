@@ -82,9 +82,11 @@ public class InspectorView : MonoBehaviour
 
     public void OnNameChanged( object newName )
     {
+        int i = 1;
         foreach (var item in CUIObject.Selection)
         {
-            item.ChangeName(newName.ToString());
+            item.ChangeName( EditorHelper.Evaluate( newName.ToString(), i ) );
+            i++;
         }
     }
 

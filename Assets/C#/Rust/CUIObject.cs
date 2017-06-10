@@ -132,13 +132,4 @@ public class CUIObject : MonoBehaviour, IPoolHandler
     {
         Lookup[ gameObject ] = this;
     }
-
-    void Update()
-    {
-        if (Input.GetKeyDown( KeyCode.C ))
-        {
-            //Debug.Log( string.Join( ", ", HierarchyView.GetCurrent().Select( p => p.Name ).ToArray() ) );
-            //Debug.Log( CuiHelper.ToJson( new CuiElementContainer() { GetCuiElement() } ) );
-        }
-    }
 }

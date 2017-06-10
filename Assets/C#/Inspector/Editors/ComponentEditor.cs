@@ -170,9 +170,16 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
         MethodInfo method;
         if (m_ComponentHooks.TryGetValue( field, out method ))
         {
+            object newValue = value;
+            int i = 1;
             foreach (var comp in InspectorView.GetSelectedComponents<CT>())
             {
-                method.Invoke( comp, new object[] { value } );
+                if (value is string)
+                {
+                    value = EditorHelper.Evaluate(value.ToString(), i);
+                }
+                method.Invoke( comp, new object[] { newValue } );
+                i++;
             }
         }
         else
