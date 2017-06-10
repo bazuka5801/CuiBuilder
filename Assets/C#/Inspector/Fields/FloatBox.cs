@@ -36,6 +36,6 @@ public class FloatBox : InspectorField
 
     public void EnableEvents()
     {
-        m_InputField.onEndEdit.AddListener( s => { onChanged.Invoke( float.Parse( s ) ); } );
+        m_InputField.onEndEdit.AddListener( s => { onChanged.Invoke( GetValue() ); } );
     }
 }

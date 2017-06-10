@@ -114,7 +114,12 @@ public abstract class ComponentEditor : MonoBehaviour
         MethodInfo method;
         if (m_Hooks.TryGetValue( field, out method ))
         {
-            method.Invoke( this, new object[] { value } );
+            object newValue = value;
+            if (value is string)
+            {
+                newValue = EditorHelper.Evaluate(value.ToString(), 1);
+            }
+            method.Invoke( this, new object[] { newValue } );
         }
     }
 }
@@ -176,7 +181,7 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
             {
                 if (value is string)
                 {
-                    value = EditorHelper.Evaluate(value.ToString(), i);
+                    newValue = EditorHelper.Evaluate(value.ToString(), i);
                 }
                 method.Invoke( comp, new object[] { newValue } );
                 i++;

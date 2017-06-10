@@ -79,8 +79,11 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     [CuiField( "position" )]
     private void OnPositionChanged( object value )
     {
-        var type = value.GetType();
-        if (type == typeof( Vector2 ))
+        if (value is string && value.ToString().IsVector())
+        {
+            value = Vector2Ex.Parse( value.ToString() );
+        }
+        if (value is Vector2)
         {
             m_Transform.SetPositionPixelLocal( (Vector2) value );
 
@@ -93,8 +96,11 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     [CuiField( "size" )]
     private void OnSizeChanged( object value )
     {
-        var type = value.GetType();
-        if (type == typeof( Vector2 ))
+        if (value is string && value.ToString().IsVector())
+        {
+            value = Vector2Ex.Parse(value.ToString());
+        }
+        if (value is Vector2)
         {
             m_Transform.SetSizePixel( (Vector2) value );
 
