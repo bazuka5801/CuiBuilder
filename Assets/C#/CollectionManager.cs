@@ -125,6 +125,11 @@ public class CollectionManager : MonoBehaviour
         }
     }
 
+    public void Save()
+    {
+        Save(AspectManager.AspectIndex);
+    }
+
     public void Save( int aspectIndex )
     {
         SaveCurrent( aspectIndex );

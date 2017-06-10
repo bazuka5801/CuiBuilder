@@ -44,26 +44,34 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private void Update()
     {
         if (isWindow || InspectorView.SelectedItem == null || InspectorView.SelectedItem.gameObject != gameObject) return;
-        var leftControl = Input.GetKey( KeyCode.LeftControl );
-        if (Input.GetKeyDown( KeyCode.LeftArrow ) || ( Input.GetKey( KeyCode.LeftArrow ) && leftControl ))
+        if (Input.GetKey(KeyCode.LeftControl))
         {
-            transform.SetPositionAnchorLocal( transform.anchorMin - transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
-        }
-        if (Input.GetKeyDown( KeyCode.RightArrow ) || ( Input.GetKey( KeyCode.RightArrow ) && leftControl ))
-        {
-            transform.SetPositionAnchorLocal( transform.anchorMin + transform.GetPixelShiftLocal().WithY( 0 ) ); TransformEditorUpdate();
-        }
-        if (Input.GetKeyDown( KeyCode.UpArrow ) || ( Input.GetKey( KeyCode.UpArrow ) && leftControl ))
-        {
-            transform.SetPositionAnchorLocal( transform.anchorMin + transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
-        }
-        if (Input.GetKeyDown( KeyCode.DownArrow ) || ( Input.GetKey( KeyCode.DownArrow ) && leftControl ))
-        {
-            transform.SetPositionAnchorLocal( transform.anchorMin - transform.GetPixelShiftLocal().WithX( 0 ) ); TransformEditorUpdate();
-        }
-        if (Input.GetKeyDown(KeyCode.B) && Input.GetKey(KeyCode.LeftControl))
-        {
-            transform.SetPositionAnchorLocal(new Vector2(0.5f,0.5f)-transform.GetSizeLocal()*0.5f); TransformEditorUpdate();
+            var leftShift = Input.GetKey(KeyCode.LeftShift);
+            if (Input.GetKeyDown(KeyCode.LeftArrow) || (Input.GetKey(KeyCode.LeftArrow) && leftShift))
+            {
+                transform.SetPositionAnchorLocal(transform.anchorMin - transform.GetPixelShiftLocal().WithY(0));
+                TransformEditorUpdate();
+            }
+            if (Input.GetKeyDown(KeyCode.RightArrow) || (Input.GetKey(KeyCode.RightArrow) && leftShift))
+            {
+                transform.SetPositionAnchorLocal(transform.anchorMin + transform.GetPixelShiftLocal().WithY(0));
+                TransformEditorUpdate();
+            }
+            if (Input.GetKeyDown(KeyCode.UpArrow) || (Input.GetKey(KeyCode.UpArrow) && leftShift))
+            {
+                transform.SetPositionAnchorLocal(transform.anchorMin + transform.GetPixelShiftLocal().WithX(0));
+                TransformEditorUpdate();
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow) || (Input.GetKey(KeyCode.DownArrow) && leftShift))
+            {
+                transform.SetPositionAnchorLocal(transform.anchorMin - transform.GetPixelShiftLocal().WithX(0));
+                TransformEditorUpdate();
+            }
+            if (Input.GetKeyDown(KeyCode.B) && Input.GetKey(KeyCode.LeftControl))
+            {
+                transform.SetPositionAnchorLocal(new Vector2(0.5f, 0.5f) - transform.GetSizeLocal() * 0.5f);
+                TransformEditorUpdate();
+            }
         }
     }
 
