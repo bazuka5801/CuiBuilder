@@ -80,7 +80,7 @@ public class CUIObject : MonoBehaviour, IPoolHandler
         GetComponent<Hierarchy>().SetParent(element.Parent);
         foreach (var component in element.Components)
         {
-            LoadCuiComponent(component);
+            LoadCuiComponent((ICuiComponent)component.Clone());
         }
     }
 

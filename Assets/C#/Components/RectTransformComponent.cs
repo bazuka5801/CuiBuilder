@@ -161,9 +161,9 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
     {
         OnPositionChanged(pos);
     }
-    public void SetPixelSize( Vector2 pos )
+    public void SetPixelSize( Vector2 size )
     {
-        OnSizeChanged( pos );
+        OnSizeChanged( size );
     }
 
     public void OnPoolEnter()

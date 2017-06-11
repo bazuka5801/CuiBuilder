@@ -157,6 +157,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
     private void DestroyTriggers()
     {
         if (m_TriggerContainer == null) return;
+        foreach (var eventTrigger in m_TriggerContainer.GetComponentsInChildren<EventTrigger>())
+        {
+            eventTrigger.triggers.Clear();
+        }
         PoolManager.Release(PrefabType.Trigger, m_TriggerContainer);
         m_TriggerContainer = null;
     }
