@@ -53,7 +53,7 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
 
     public void UpdateLists()
     {
-        m_Children = m_Hierarchy.GetChildren().Select( p => p.GetComponent<RectTransformComponent>() ).Where(p=>p).ToList();
+        m_Children = m_Hierarchy.GetChildren().Select( p => p.GetComponent<RectTransformComponent>() ).Where(p=>p).OrderBy(p=>p.transform.GetSiblingIndex()).ToList();
 
         m_Weights = m_Children.Select(p =>
         {

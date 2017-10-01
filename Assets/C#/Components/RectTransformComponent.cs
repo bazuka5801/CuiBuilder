@@ -1,4 +1,5 @@
-﻿using Oxide.Game.Rust.Cui;
+﻿using System;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 
 public sealed class RectTransformComponent : BaseComponent<CuiRectTransformComponent>, IPoolHandler
@@ -36,7 +37,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             var vec = (Vector2) value;
             m_Transform.SetPositionAnchorLocal( vec );
-            CuiComponent.AnchorMin = string.Format( "{0} {1}", vec.x, vec.y );
+            CuiComponent.AnchorMin = string.Format("{0} {1}", vec.x, vec.y);
         }
         else
         {
@@ -60,7 +61,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             var vec = (Vector2) value;
             m_Transform.anchorMax = (Vector2) value;
-            CuiComponent.AnchorMax = string.Format( "{0} {1}", vec.x, vec.y );
+            CuiComponent.AnchorMax = string.Format("{0} {1}", vec.x, vec.y);
         }
         else
         {
@@ -87,8 +88,8 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             m_Transform.SetPositionPixelLocal( (Vector2) value );
 
-            CuiComponent.AnchorMin = string.Format( "{0} {1}", m_Transform.anchorMin.x, m_Transform.anchorMin.y );
-            CuiComponent.AnchorMax = string.Format( "{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y );
+            CuiComponent.AnchorMin = string.Format("{0} {1}", m_Transform.anchorMin.x, m_Transform.anchorMin.y);
+            CuiComponent.AnchorMax = string.Format("{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y);
 
             if (OnChanged != null) OnChanged.Invoke();
         }
@@ -104,7 +105,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             m_Transform.SetSizePixel( (Vector2) value );
 
-            CuiComponent.AnchorMax = string.Format( "{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y );
+            CuiComponent.AnchorMax = string.Format("{0} {1}", m_Transform.anchorMax.x, m_Transform.anchorMax.y);
 
             if (OnChanged != null) OnChanged.Invoke();
         }
@@ -119,7 +120,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             var vec = (Vector2) value;
             m_Transform.offsetMin = (Vector2) value;
-            CuiComponent.OffsetMin = string.Format( "{0} {1}", vec.x, vec.y );
+            CuiComponent.OffsetMin = string.Format("{0} {1}", vec.x, vec.y);
         }
         else
         {
@@ -142,7 +143,7 @@ public sealed class RectTransformComponent : BaseComponent<CuiRectTransformCompo
         {
             var vec = (Vector2) value;
             m_Transform.offsetMax = (Vector2) value;
-            CuiComponent.OffsetMax = string.Format( "{0} {1}", vec.x, vec.y );
+            CuiComponent.OffsetMax = string.Format("{0} {1}", vec.x, vec.y);
         }
         else
         {

@@ -23,6 +23,7 @@ public sealed class ImageComponent : BaseComponent<CuiRawImageComponent>, IGraph
         OnMaterialChanged( component.Material );
         OnColorChanged( component.Color );
         OnPngChanged( component.Png );
+        OnUrlChanged( component.Url );
         OnFadeInChanged( component.FadeIn );
     }
 
@@ -50,7 +51,13 @@ public sealed class ImageComponent : BaseComponent<CuiRawImageComponent>, IGraph
     {
         var url = value.ToString();
         CuiComponent.Png = url;
-        m_Image.texture = ImageStorage.Get(url);
+        m_Image.texture = ImageStorage.Get( url );
+    }
+
+    [CuiField( "url" )]
+    private void OnUrlChanged( object value )
+    {
+        CuiComponent.Url = value.ToString();
     }
 
     [CuiField( "fadein" )]

@@ -39,7 +39,7 @@ public class EnumBox : InspectorField
 
     public override void SetValue( object value )
     {
-        m_Template.transform.parent.FindChild( Enum.GetNames( m_EnumType )[ Convert.ToInt32( value.ToString() ) ] ).GetComponent<Toggle>().isOn =
+        m_Template.transform.parent.Find( Enum.GetNames( m_EnumType )[ Convert.ToInt32( value.ToString() ) ] ).GetComponent<Toggle>().isOn =
             true;
     }
 }

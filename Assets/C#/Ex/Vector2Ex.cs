@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 namespace UnityEngine
 {
@@ -45,7 +46,7 @@ namespace UnityEngine
         }
         public static string ToString( Vector2 vec )
         {
-            return string.Format( "{0} {1}", vec.x, vec.y );
+            return string.Format("{0} {1}", vec.x, vec.y);
         }
     }
 }

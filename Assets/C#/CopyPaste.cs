@@ -11,7 +11,7 @@ public class CopyPaste : MonoBehaviour {
     public void Copy()
     {
         clipboardBuffer = CollectionManager.GetSelectedCui();
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftAlt))
         {
             clipboardBuffer.ForEach(AddRectPixelComponent);
         }

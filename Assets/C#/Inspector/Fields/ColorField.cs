@@ -1,4 +1,5 @@
-﻿using Oxide.Game.Rust.Cui;
+﻿using System;
+using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -17,7 +18,7 @@ public class ColorField : InspectorField
              if (HexColorField.HexToColor( s, out color32 ))
              {
                  Color color = color32;
-                 onChanged.Invoke( string.Format( "{0} {1} {2} {3}", color.r, color.g, color.b, color.a ) );
+                 onChanged.Invoke(string.Format("{0} {1} {2} {3}", color.r, color.g, color.b, color.a));
                  return;
              }
              onChanged.Invoke( s );
@@ -25,7 +26,7 @@ public class ColorField : InspectorField
         GetComponent<ColorPicker>().onValueChanged.AddListener( color =>
         {
             if (lockedObject) return;
-             onChanged.Invoke( string.Format( "{0} {1} {2} {3}", color.r, color.g, color.b, color.a ) );
+             onChanged.Invoke(string.Format("{0} {1} {2} {3}", color.r, color.g, color.b, color.a));
          } );
     }
 

@@ -11,6 +11,8 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     private static List<Hierarchy> history = new List<Hierarchy>();
     private readonly List<Hierarchy> Children = new List<Hierarchy>();
 
+    private static Dictionary<string, Hierarchy> Root;
+
     public event OnChildrenEvent OnChildAdded;
     public event OnChildrenEvent OnChildRemoved;
 
@@ -27,9 +29,16 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
     }
 
     public static List<Hierarchy> Selection { get { return HierarchyView.GetSelectedItems().Select( o => Lookup[ o ] ).ToList(); } }
-
     private void Awake()
     {
+        if (Root == null)
+        {
+            Root = new Dictionary<string, Hierarchy>()
+            {
+                { "Hud", GameObject.Find("Hud").GetComponent<Hierarchy>() },
+                { "Overlay", GameObject.Find("Overlay").GetComponent<Hierarchy>() }
+            };
+        }
         Lookup[ gameObject ] = this;
     }
 
@@ -131,7 +140,13 @@ public class Hierarchy : MonoBehaviour, IPoolHandler, IPointerClickHandler, ISel
 
     public void SetParent(string parentName)
     {
-        Hierarchy parent = history.LastOrDefault(hierarchy => hierarchy.name == parentName);
+        Hierarchy parent;
+        if (Root.TryGetValue(parentName, out parent))
+        {
+            SetParent(parent);
+            return;
+        }
+        parent = history.LastOrDefault(hierarchy => hierarchy.name == parentName);
         if (parent != null)
         {
             SetParent(parent);
