@@ -40,6 +40,7 @@ public sealed class TextComponent : BaseComponent<CuiTextComponent>, IGraphicCom
     private void OnFontChanged( object value )
     {
         CuiComponent.Font = value.ToString();
+        m_Text.font = FindObjectOfType<RustCanvas>().Fonts[value.ToString() == "robotocondensed-bold.ttf" ? 1 : 0];
     }
 
     [CuiField( "fontsize" )]

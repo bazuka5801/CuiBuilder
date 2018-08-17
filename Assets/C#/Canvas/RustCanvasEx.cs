@@ -11,6 +11,11 @@ public static class RustCanvasEx
         get { return new Vector2( Screen.width, Screen.height ); }
     }
 
+    private static Vector2 ScreenScaling
+    {
+        get { return ScreenVec.Div(RustCanvas.refResolution); }
+    }
+
     #region RectTransform
 
     public static GameObject CreateChild( this RectTransform transform, string name )
@@ -97,7 +102,7 @@ public static class RustCanvasEx
 
     public static Vector2 GetSizeLocal( this RectTransform transform )
     {
-        return transform.anchorMax - transform.anchorMin;
+        return transform.anchorMax - transform.anchorMin + (transform.offsetMax-transform.offsetMin)/RustCanvas.refResolution;
     }
 
     public static Vector2 GetSizeWorld( this RectTransform transform )
@@ -110,7 +115,7 @@ public static class RustCanvasEx
 
     public static void SetSizeWorld( this RectTransform transform, Vector2 size )
     {
-        var worldAnchorMax = transform.GetParent().GetWorldPoint( transform.anchorMin ) + size;
+        var worldAnchorMax = transform.GetParent().GetWorldPoint( transform.anchorMin + transform.offsetMin / RustCanvas.refResolution ) + size;
         var localAnchorMax = transform.GetParent().GetLocalPoint( worldAnchorMax );
         transform.SetRect( transform.anchorMin, localAnchorMax );
     }
@@ -190,7 +195,7 @@ public static class RustCanvasEx
         hierarchy.Reverse();
         foreach (var hierarchyElement in hierarchy)
         {
-            point -= hierarchyElement.anchorMin;
+            point -= hierarchyElement.anchorMin + hierarchyElement.offsetMin / RustCanvas.refResolution;
             point = point.Div( hierarchyElement.GetSizeLocal() );
         }
         return point;
@@ -232,12 +237,12 @@ public static class RustCanvasEx
 
     public static Vector2 GetPivotLocalPosition( this RectTransform transform, Vector2 pivot )
     {
-        return transform.anchorMin + Vector2.Scale( transform.GetSizeLocal(), pivot );
+        return transform.anchorMin+ transform.offsetMin / RustCanvas.refResolution + Vector2.Scale( transform.GetSizeLocal(), pivot );
     }
 
     public static Vector2 GetPivotPositionWorld( this RectTransform transform, Vector2 pivot )
     {
-        return transform.GetParent().GetWorldPoint( transform.anchorMin+Vector2.Scale( transform.GetSizeLocal(),pivot) );
+        return transform.GetParent().GetWorldPoint( transform.anchorMin+ transform.offsetMin / RustCanvas.refResolution+Vector2.Scale( transform.GetSizeLocal(),pivot) );
     }
 
     #endregion

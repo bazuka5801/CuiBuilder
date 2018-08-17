@@ -15,22 +15,19 @@ public class CollectionManager : MonoBehaviour
     [SerializeField] private InputField m_InputField;
 
     private int m_FunctionIndex = 0;
-    public static Dictionary<string, Cui> Functions = new Dictionary<string, Cui>();
-    private Cui m_Current { get { return Functions.ElementAt( m_FunctionIndex ).Value; } }
+    public static Dictionary<string, List<CuiElement>> Functions = new Dictionary<string, List<CuiElement>>();
+    private List<CuiElement> m_Current { get { return Functions.ElementAt( m_FunctionIndex ).Value; } }
 
 
     private void Awake()
     {
-        AspectManager.OnChanged += OnAspectChanged;
-        AspectManager.OnPreChange += OnPreAspectChange;
-
         CuiHelper.RegisterComponent( "LayoutGroup", typeof( CuiLayoutGroupComponent ) );
         CuiHelper.RegisterComponent( "LayoutElement", typeof( CuiLayoutElementComponent ) );
     }
 
     private void OnPreAspectChange( int aspectIndex )
     {
-        Save( aspectIndex );
+        Save( );
     }
 
     private IEnumerator Start()
@@ -40,21 +37,21 @@ public class CollectionManager : MonoBehaviour
         m_Dropdown.onValueChanged.AddListener( functionIndex =>
          {
              if (m_FunctionIndex == functionIndex) return;
-             Save( AspectManager.AspectIndex );
-             Change( functionIndex, AspectManager.AspectIndex );
+             Save( );
+             Change( functionIndex );
          } );
     }
 
 
     public void Add( string funcName )
     {
-        Functions.Add( funcName, Cui.Default );
+        Functions.Add( funcName, new CuiElementContainer() );
         UpdateOptions();
     }
 
     private void OnAspectChanged( int aspectIndex )
     {
-        Change( m_FunctionIndex, aspectIndex );
+        Change( m_FunctionIndex );
     }
 
     public void OnAddClick()
@@ -62,21 +59,20 @@ public class CollectionManager : MonoBehaviour
         Add( m_InputField.text );
     }
 
-    private void Load( int aspect = -1 )
+    private void Load( )
     {
-        if (aspect == -1)
-        {
-            aspect = AspectManager.AspectIndex;
-        }
-        foreach (var element in CuiHelper.FromJson( m_Current.Get( aspect ) ))
+        foreach (var element in m_Current)
         {
             CuiManager.Create().Load( element );
         }
     }
-    private void SaveCurrent( int aspectIndex )
+    
+    private void SaveCurrent( )
     {
-        m_Current.Set( aspectIndex, GetCurrentCui().ToJson() );
+        var key = Functions.ElementAt(m_FunctionIndex).Key;
+        Functions[key] = GetCurrentCui();
     }
+    
     public void RemoveCurrent()
     {
         if (Functions.Count == 1)
@@ -92,11 +88,11 @@ public class CollectionManager : MonoBehaviour
         UpdateOptions();
         Load();
     }
-    private void Change( int functionIndex, int aspectIndex )
+    private void Change( int functionIndex )
     {
         m_FunctionIndex = functionIndex;
         UnloadCurrent();
-        Load( aspectIndex );
+        Load( );
     }
 
     private void UpdateOptions()
@@ -125,91 +121,48 @@ public class CollectionManager : MonoBehaviour
         }
     }
 
-    public void Save()
+    public void Save( )
     {
-        Save(AspectManager.AspectIndex);
+        SaveCurrent( );
+        FileHelper.SaveJson( "save", CuiHelper.ToJson( Functions, true ) );
     }
-
-    public void Save( int aspectIndex )
-    {
-        SaveCurrent( aspectIndex );
-        FileHelper.Save( "save.json", CuiHelper.ToJson( Functions ) );
-    }
+    
     public void Export()
     {
-        Save( AspectManager.AspectIndex );
-        var production = Functions.ToDictionary( p => p.Key, p => p.Value.GetProduction() );
-        FileHelper.Save( "CuiGenerator.json", CuiHelper.ToJson( production ) );
+        Save( );
+        var production = Functions.ToDictionary( p => p.Key, p => CuiHelper.GetProduction( CuiHelper.ToJson( p.Value ) ) );
+        FileHelper.SaveJson( "CuiDB", CuiHelper.ToJson( production ) );
+        
+        // Save debug information
+        foreach (var prod in production)
+        {
+            FileHelper.SaveJson("Debug/" + prod.Key, JsonPrettify(prod.Value));
+        }
     }
     private void LoadFromSave()
     {
         if (!File.Exists( "save.json" ))
         {
-            File.WriteAllText( "save.json", CuiHelper.ToJson( new Dictionary<string, Cui>()
+            File.WriteAllText( "save.json", CuiHelper.ToJson( new Dictionary<string, string>()
             {
-                {"test", Cui.Default }
+                {"test", "{}" }
             } ) );
         }
-        Functions = CuiHelper.DeserializeObject<Dictionary<string, Cui>>( File.ReadAllText( "save.json" ) );
+        Functions = CuiHelper.DeserializeObject<Dictionary<string, List<CuiElement>>>( File.ReadAllText( "save.json" ) );
 
         UpdateOptions();
         Load();
     }
-}
-
-[Serializable]
-public class Cui
-{
-    [JsonProperty( "16x9" )] public string _16x9 = "";
-    [JsonProperty( "16x10" )] public string _16x10 = "";
-    [JsonProperty( "5x4" )] public string _5x4 = "";
-    [JsonProperty( "4x3" )] public string _4x3 = "";
-
-    public string Get( int aspect )
+    
+    public static string JsonPrettify(string json)
     {
-        switch (aspect)
+        using (var stringReader = new StringReader(json))
+        using (var stringWriter = new StringWriter())
         {
-            case 0:
-                return _16x9;
-            case 1:
-                return _16x10;
-            case 2:
-                return _5x4;
-            case 3:
-                return _4x3;
+            var jsonReader = new JsonTextReader(stringReader);
+            var jsonWriter = new JsonTextWriter(stringWriter) { Formatting = Formatting.Indented };
+            jsonWriter.WriteToken(jsonReader);
+            return stringWriter.ToString();
         }
-        return "";
-    }
-
-    public void Set( int aspect, string json )
-    {
-        switch (aspect)
-        {
-            case 0:
-                _16x9 = json;
-                break;
-            case 1:
-                _16x10 = json;
-                break;
-            case 2:
-                _5x4 = json;
-                break;
-            case 3:
-                _4x3 = json;
-                break;
-        }
-    }
-
-    public static Cui Default { get { return new Cui() { _16x9 = "[]", _16x10 = "[]", _5x4 = "[]", _4x3 = "[]" }; } }
-
-    public Cui GetProduction()
-    {
-        return new Cui()
-        {
-            _16x9 = CuiHelper.GetProduction( _16x9 ),
-            _16x10 = CuiHelper.GetProduction( _16x10 ),
-            _5x4 = CuiHelper.GetProduction( _5x4 ),
-            _4x3 = CuiHelper.GetProduction( _4x3 ),
-        };
     }
 }

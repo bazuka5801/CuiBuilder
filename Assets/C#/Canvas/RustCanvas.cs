@@ -1,12 +1,14 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [RequireComponent( typeof( Canvas ) )]
 public class RustCanvas : MonoBehaviour, IEventSystemHandler
 {
-
-    private static readonly Vector2 refResolution = new Vector2( 1280f, 720f );
+    public List<Font> Fonts;
+    
+    internal static readonly Vector2 refResolution = new Vector2( 1280f, 720f );
     private CanvasScaler scaler;
     private static RectTransform canvas;
 

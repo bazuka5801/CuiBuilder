@@ -83,7 +83,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         {
             InspectorView.SelectedItem = CUIObject.Lookup[ transform.gameObject ];
         }
-        mDelta = transform.anchorMin + transform.GetSizeLocal() * 0.5f - transform.GetMouseLocal();
+        mDelta = transform.anchorMin + transform.offsetMin / RustCanvas.refResolution+ transform.GetSizeLocal() * 0.5f - transform.GetMouseLocal();
         mInteractPoint = interactPivot;
         mAnchorPos = transform.GetPivotLocalPosition( mAnchor );
     }

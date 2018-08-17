@@ -117,7 +117,8 @@ public abstract class ComponentEditor : MonoBehaviour
             object newValue = value;
             if (value is string)
             {
-                newValue = EditorHelper.Evaluate(value.ToString(), 1);
+                var arr = value.ToString().Split(' ');
+                newValue = string.Join(" ", arr.Select(v=> EditorHelper.Evaluate(v.ToString(), 1)).ToArray());
             }
             method.Invoke( this, new object[] { newValue } );
         }
@@ -181,7 +182,8 @@ public abstract class ComponentEditor<CT, CCT> : ComponentEditor
             {
                 if (value is string)
                 {
-                    newValue = EditorHelper.Evaluate(value.ToString(), i);
+                    var arr = value.ToString().Split(' ');
+                    newValue = string.Join(" ", arr.Select(v=> EditorHelper.Evaluate(v.ToString(), i)).ToArray());
                 }
                 method.Invoke( comp, new object[] { newValue } );
                 i++;

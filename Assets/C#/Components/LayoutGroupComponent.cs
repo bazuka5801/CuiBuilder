@@ -101,7 +101,7 @@ public sealed class LayoutGroupComponent : BaseComponent<CuiLayoutGroupComponent
                 case LayoutGroupMode.Vertical:
                 {
                         var anchorMax = new Vector2( 1 - spacingOffset.x, anchorMin + sizes[ i ] );
-                        child.SetRect( new Vector2( spacingOffset.x, anchorMin ), anchorMax);
+                        child.SetRect( new Vector2( spacingOffset.x, 1- anchorMax.y ), anchorMax.WithY(1- anchorMin ) );
                         break;
                 }
             }
@@ -151,6 +151,7 @@ public class CuiLayoutGroupComponent : ICuiComponent
     public string Type
     {
         get { return "LayoutGroup"; }
+        set { }
     }
 
     [DefaultValue( LayoutGroupMode.Horizontal )]

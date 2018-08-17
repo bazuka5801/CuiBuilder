@@ -39,6 +39,7 @@ public class CuiLayoutElementComponent : ICuiComponent
     public string Type
     {
         get { return "LayoutElement"; }
+        set { }
     }
 
     [DefaultValue( 1.0f )]

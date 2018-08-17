@@ -53,7 +53,12 @@ public class CopyPaste : MonoBehaviour {
     [System.Serializable]
     private class RectPixelComponent : ICuiComponent
     {
-        public string Type { get { return "RectPixel"; } }
+        public string Type
+        {
+            get { return "RectPixel"; }
+            set { }
+        }
+
         public Vector2 Position { get; set; }
         public Vector2 Size { get; set; }
 
