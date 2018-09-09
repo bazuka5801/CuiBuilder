@@ -4,6 +4,7 @@
 **/[Bb]uild/*
 **/.vs/*
 **/.idea/*
+**/__pycache__/*
 Assets/Plugins/Editor/JetBrains/*
 Assets/Plugins/Editor/JetBrains.meta
 
