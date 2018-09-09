@@ -137,6 +137,7 @@ public class CollectionManager : MonoBehaviour
         foreach (var prod in production)
         {
             FileHelper.SaveJson("Debug/" + prod.Key, JsonPrettify(prod.Value));
+            FileHelper.SaveJson("Release/" + prod.Key, prod.Value);
         }
     }
     private void LoadFromSave()
