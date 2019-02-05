@@ -49,11 +49,6 @@ public class CollectionManager : MonoBehaviour
         UpdateOptions();
     }
 
-    private void OnAspectChanged( int aspectIndex )
-    {
-        Change( m_FunctionIndex );
-    }
-
     public void OnAddClick()
     {
         Add( m_InputField.text );
