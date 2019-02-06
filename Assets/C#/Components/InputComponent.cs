@@ -22,6 +22,7 @@ public sealed class InputComponent : BaseComponent<CuiInputFieldComponent>, IGra
 
     protected override void Load( CuiInputFieldComponent component )
     {
+        OnTextChanged( component.Text );
         OnFontChanged( component.Font );
         OnFontSizeChanged( component.FontSize );
         OnAlignChanged( (int)component.Align );
@@ -29,6 +30,12 @@ public sealed class InputComponent : BaseComponent<CuiInputFieldComponent>, IGra
         OnCharLimitChanged( component.CharsLimit );
         OnCommandChanged( component.Command );
         OnPasswordChanged( component.IsPassword );
+    }
+
+    [CuiField( "text" )]
+    private void OnTextChanged( object value )
+    {
+        CuiComponent.Text = value.ToString();
     }
 
     [CuiField( "font" )]

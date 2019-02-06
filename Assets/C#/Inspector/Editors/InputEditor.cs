@@ -4,6 +4,7 @@ public class InputEditor : ComponentEditor<InputComponent, CuiInputFieldComponen
 {
     public override void Load( CuiInputFieldComponent component )
     {
+        GetField( "text" ).SetValue( component.Text );
         GetField( "fontsize" ).SetValue( component.FontSize );
         GetField( "font" ).SetValue( component.Font );
         GetField( "align" ).SetValue( (int) component.Align );
