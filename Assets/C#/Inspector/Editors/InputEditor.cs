@@ -5,7 +5,7 @@ public class InputEditor : ComponentEditor<InputComponent, CuiInputFieldComponen
     public override void Load( CuiInputFieldComponent component )
     {
         GetField( "fontsize" ).SetValue( component.FontSize );
-        GetField( "font" ).SetValue( component.FontSize );
+        GetField( "font" ).SetValue( component.Font );
         GetField( "align" ).SetValue( (int) component.Align );
         GetField( "color" ).SetValue( component.Color );
         GetField( "charlimit" ).SetValue( component.CharsLimit );
