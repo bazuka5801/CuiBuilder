@@ -93,9 +93,10 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
             if (Input.GetKeyDown(KeyCode.Equals))
             {
                 currentGridIndex++;
+                var gridCount = Grid.Count();
                 if (currentGridIndex == Grid.Count())
                 {
-                    currentGridIndex = 0;
+                    currentGridIndex = gridCount - 1;
                 }
             }
             if (Input.GetKeyDown(KeyCode.Minus))
@@ -103,7 +104,7 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
                 currentGridIndex--;
                 if (currentGridIndex == -1)
                 {
-                    currentGridIndex = Grid.Count() - 1;
+                    currentGridIndex = 0;
                 }
             }
         }
