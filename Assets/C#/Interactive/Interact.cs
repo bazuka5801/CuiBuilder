@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Linq;
 using Oxide.Game.Rust.Cui;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -14,7 +15,20 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
 
 
     private static readonly Vector2 Center = new Vector2( 0.5f, 0.5f );
-
+    private List<float> Grid = new List<float>() {
+        0.01f,
+        0.02f,
+        0.03f,
+        0.04f,
+        0.05f,
+        0.06f,
+        0.07f,
+        0.08f,
+        0.09f,
+        0.1f
+    };
+    private int currentGridIndex;
+    private bool GridEnabled;
     private RectTransform parent { get { return transform.parent.GetComponent<RectTransform>(); } }
     private new RectTransform transform;
     private Vector2 mInteractPoint;
@@ -72,6 +86,26 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
                 transform.SetPositionAnchorLocal(new Vector2(0.5f, 0.5f) - transform.GetSizeLocal() * 0.5f);
                 TransformEditorUpdate();
             }
+            if (Input.GetKeyDown(KeyCode.LeftBracket))
+            {
+                GridEnabled = !GridEnabled;
+            }
+            if (Input.GetKeyDown(KeyCode.Equals))
+            {
+                currentGridIndex++;
+                if (currentGridIndex == Grid.Count())
+                {
+                    currentGridIndex = 0;
+                }
+            }
+            if (Input.GetKeyDown(KeyCode.Minus))
+            {
+                currentGridIndex--;
+                if (currentGridIndex == -1)
+                {
+                    currentGridIndex = Grid.Count() - 1;
+                }
+            }
         }
     }
 
@@ -88,9 +122,14 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
         mAnchorPos = transform.GetPivotLocalPosition( mAnchor );
     }
 
-    private void OnMove()
-    {
-        transform.SetPositionAnchorLocal( transform.GetMouseLocal() + mDelta - transform.GetSizeLocal() * 0.5f, isWindow );
+    private void OnMove() {
+        var pos = transform.GetMouseLocal() + mDelta - transform.GetSizeLocal() * 0.5f;
+        if (GridEnabled) {
+            pos.x = pos.x - (pos.x % Grid[currentGridIndex]);
+            pos.y = pos.y - (pos.y % Grid[currentGridIndex]);
+        }
+
+        transform.SetPositionAnchorLocal( pos, isWindow );
 
         TransformEditorUpdate();
     }
@@ -104,16 +143,29 @@ public class Interact : MonoBehaviour, IPoolHandler, ISelectHandler
             if (Mathf.Approximately( mInteractPoint[ j ], 0.5f ))
                 size[ j ] = currentSize[ j ];
 
-        transform.SetRect( transform.anchorMin, transform.anchorMin + size );
+        var anchorSize = transform.anchorMin + size;
+        if (GridEnabled) {
+            anchorSize.x = anchorSize.x - (anchorSize.x % Grid[currentGridIndex]);
+            anchorSize.y = anchorSize.y - (anchorSize.y % Grid[currentGridIndex]);
+        }
+
+        transform.SetRect( transform.anchorMin, anchorSize );
         var posDelta = mAnchorPos - transform.GetPivotLocalPosition( mAnchor );
-        transform.SetPositionAnchorLocal( transform.anchorMin + posDelta );
+
+        var pos = transform.anchorMin + posDelta;
+        if (GridEnabled) {
+            pos.x = pos.x - (pos.x % Grid[currentGridIndex]);
+            pos.y = pos.y - (pos.y % Grid[currentGridIndex]);
+        }
+
+        transform.SetPositionAnchorLocal( pos );
         TransformEditorUpdate();
     }
 
     void TransformEditorUpdate()
     {
         if (isWindow) return;
-
+        
         m_TransformEditor.SendAnchorMinUpdate( transform.anchorMin );
         m_TransformEditor.SendAnchorMaxUpdate( transform.anchorMax );
     }
