@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Oxide.Game.Rust.Cui;
@@ -10,34 +10,37 @@ public class CopyPaste : MonoBehaviour {
 
     public void Copy()
     {
-        clipboardBuffer = CollectionManager.GetSelectedCui();
-        if (Input.GetKey(KeyCode.LeftAlt))
-        {
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.C)) {
+            clipboardBuffer = CollectionManager.GetSelectedCui();
             clipboardBuffer.ForEach(AddRectPixelComponent);
         }
     }
 
     public void Paste()
     {
-        foreach (var element in clipboardBuffer)
-        {
-            var cui = CuiManager.Create();
-            var pixelComponent = element.Components.OfType<RectPixelComponent>().FirstOrDefault();
-            if (pixelComponent != null)
-            {
-                element.Components.Remove(pixelComponent);
-            }
+        if (Input.GetKey(KeyCode.LeftControl) && Input.GetKeyDown(KeyCode.V) && clipboardBuffer != null) {
+            foreach (var element in clipboardBuffer) {
+                var cui = CuiManager.Create();
+                var pixelComponent = element.Components.OfType<RectPixelComponent>().FirstOrDefault();
+                if (pixelComponent != null) {
+                    element.Components.Remove(pixelComponent);
+                }
 
-            cui.Load(element);
+                cui.Load(element);
 
-            if (pixelComponent != null)
-            {
-                element.Components.Add(pixelComponent);
-                var rTransform = cui.GetComponent<RectTransformComponent>();
-                rTransform.SetPixelLocalPosition(pixelComponent.Position);
-                rTransform.SetPixelSize(pixelComponent.Size);
+                if (pixelComponent == null) {
+                    element.Components.Add(pixelComponent);
+                    var rTransform = cui.GetComponent<RectTransformComponent>();
+                    rTransform.SetPixelLocalPosition(pixelComponent.Position);
+                    rTransform.SetPixelSize(pixelComponent.Size);
+                }
             }
         }
+    }
+    
+    private void Update() {
+        Copy();
+        Paste();
     }
 
     private void AddRectPixelComponent(CuiElement element)
