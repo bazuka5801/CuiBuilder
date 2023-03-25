@@ -15,6 +15,10 @@
 | **Ctrl+Shift+C** | Copy by anchors |
 | **Ctrl+Shift+Alt+C** | Copy by pixels |
 | **Ctrl+Shift+V** | Paste |
+| **Ctrl+Left Bracket** | Enable gird on seleceted object |
+| **Ctrl+Equal** | Increase grid size on selected object |
+| **Ctrl+Minus** | Decrease grid size on selected object |
+| **X** | New object |
 
 # Русский
 
